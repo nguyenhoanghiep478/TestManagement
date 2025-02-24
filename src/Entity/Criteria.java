@@ -10,4 +10,9 @@ public class Criteria {
     private Object value;
     private String operation;
 
+    public Criteria(String key,  String operation,Object value) {
+        this.key = key;
+        this.value = value;
+        this.operation = operation;
+    }
 }
