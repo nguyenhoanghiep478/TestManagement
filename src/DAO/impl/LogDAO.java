@@ -5,7 +5,6 @@ import DAO.ILogDAO;
 import Entity.Criteria;
 import Entity.LogEntity;
 import Utils.Mapper.impl.LogMapper;
-import Utils.Mapper.impl.ResultMapper;
 import lombok.RequiredArgsConstructor;
 
 import javax.xml.transform.Result;
