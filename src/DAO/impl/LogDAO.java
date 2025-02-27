@@ -7,7 +7,7 @@ import Entity.LogEntity;
 import Utils.Mapper.impl.LogMapper;
 import lombok.RequiredArgsConstructor;
 
-import javax.xml.transform.Result;
+
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -57,7 +57,6 @@ public class LogDAO extends AbstractDAO<LogEntity> implements ILogDAO {
         """;
 
         update(query,
-                log.getLogId(),
                 log.getLogContent(),
                 log.getLogUserId(),
                 log.getLogExId(),

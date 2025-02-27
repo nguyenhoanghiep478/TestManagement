@@ -1,10 +1,10 @@
 package DAO;
 
-import Entity.ResultEntity;
+import Entity.ExamEntity;
 
 public interface IExamDAO {
-    void delete(int testID);
-    ResultEntity findBy(int testID);
-    long insert(ResultEntity result);
-    void update(ResultEntity result);
+    void delete(String exCode);
+    ExamEntity findBy(String exCode);
+    long insert(ExamEntity exam);
+    void update(ExamEntity exam);
 }
