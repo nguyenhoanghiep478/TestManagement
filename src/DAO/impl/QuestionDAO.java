@@ -6,10 +6,11 @@ import Entity.QuestionEntity;
 import Utils.Mapper.impl.QuestionMapper;
 import lombok.RequiredArgsConstructor;
 
+import java.util.Collections;
 import java.util.List;
 @RequiredArgsConstructor
 public class QuestionDAO extends AbstractDAO<QuestionEntity> implements IQuestDAO {
-    private  QuestionMapper rowMapper;
+    private  QuestionMapper rowMapper=new QuestionMapper();
     @Override
     public void delete(int rsNum) {
         String query = "UPDATE questions SET qStatus = 0 WHERE qID = ?";
@@ -18,10 +19,13 @@ public class QuestionDAO extends AbstractDAO<QuestionEntity> implements IQuestDA
 
     @Override
     public QuestionEntity findBy(int rsNum) {
-        List<Criteria> criterias = List.of(new Criteria("qID", ":", rsNum));
+        List<Criteria> criterias = List.of(new Criteria("qID", "=", rsNum));
         return searchBy(criterias, rowMapper, "questions").stream().findFirst().orElse(null);
     }
-
+    @Override
+    public List<QuestionEntity> findAll() {
+        return searchBy(Collections.emptyList(),rowMapper, "questions");
+    }
     @Override
     public long insert(QuestionEntity result) {
         String query = """

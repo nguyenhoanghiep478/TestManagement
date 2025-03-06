@@ -2,10 +2,12 @@ package DAO.impl;
 
 import DAO.IUserDAO;
 import Entity.Criteria;
+import Entity.TopicEntity;
 import Entity.UserEntity;
 import Utils.Mapper.impl.UserMapper;
 import lombok.RequiredArgsConstructor;
 
+import java.util.Collections;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -19,8 +21,15 @@ public class UserDAO extends AbstractDAO<UserEntity> implements IUserDAO {
 
     @Override
     public UserEntity findBy(int testID) {
-        List<Criteria> criterias = List.of(new Criteria("userID", ":", testID));
+        List<Criteria> criterias = List.of(new Criteria("userID", "=", testID));
         return searchBy(criterias, userMapper, "users").stream().findFirst().orElse(null);
+    }
+    public UserEntity findByName(String name) {
+        List<Criteria> criterias = List.of(new Criteria("userName", "=", name));
+        return searchBy(criterias, userMapper, "users").stream().findFirst().orElse(null);
+    }
+    public List<UserEntity> findAll() {
+        return searchBy(Collections.emptyList(),userMapper, "users");
     }
     @Override
     public long insert(UserEntity result) {
