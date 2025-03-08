@@ -21,9 +21,16 @@ public class TopicDAO extends AbstractDAO<TopicEntity> implements ITopicDAO {
 
     @Override
     public TopicEntity findBy(int testID) {
-        List<Criteria> criterias = List.of(new Criteria("tpID", ":", testID));
+        List<Criteria> criterias = List.of(new Criteria("tpID", "=", testID));
         return searchBy(criterias, topicMapper, "topics").stream().findFirst().orElse(null);
     }
+
+    @Override
+    public TopicEntity findByTitle(String name) {
+        List<Criteria> criterias = List.of(new Criteria("tpTitle", "=", name));
+        return searchBy(criterias, topicMapper, "topics").stream().findFirst().orElse(null);
+    }
+
     public List<TopicEntity> findAll() {
         return searchBy(Collections.emptyList(),topicMapper, "topics");
     }
@@ -42,7 +49,6 @@ public class TopicDAO extends AbstractDAO<TopicEntity> implements ITopicDAO {
                 result.getTpStatus()
         );
     }
-
     @Override
     public void update(TopicEntity result) {
         String query = """
