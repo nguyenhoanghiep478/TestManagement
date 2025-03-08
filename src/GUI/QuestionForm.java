@@ -7,6 +7,11 @@ import BUS.TopicBUS;
 import Entity.QuestionEntity;
 import Entity.TopicEntity;
 
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+
 import java.awt.EventQueue;
 
 import javax.swing.border.EmptyBorder;
@@ -19,9 +24,12 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
+import java.util.ArrayList;
+import java.util.List;
 
 public class QuestionForm extends JFrame {
     private JTextField txtContent;
@@ -34,9 +42,10 @@ public class QuestionForm extends JFrame {
 
     private JTextField search;
     private final ITopicBUS topicBUS = new TopicBUS();
-    private final IQuestionBUS questionBUS=new QuestionBUS();
+    private final IQuestionBUS questionBUS = new QuestionBUS();
+
     public QuestionForm() {
-    	getContentPane().setBackground(new Color(255, 255, 255));
+        getContentPane().setBackground(new Color(255, 255, 255));
         setTitle("Quản lý Câu Hỏi");
         setSize(800, 600);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -104,7 +113,13 @@ public class QuestionForm extends JFrame {
         btnAdd.setFont(new Font("Times New Roman", Font.PLAIN, 18));
         btnAdd.setBounds(630, 7, 126, 46);
         btnAdd.setHorizontalAlignment(SwingConstants.LEFT);
-        btnAdd.setIcon(new ImageIcon(getClass().getClassLoader().getResource("ICON/add.png")));
+        // Lấy icon từ đường dẫn
+        ImageIcon addIcon = new ImageIcon(getClass().getClassLoader().getResource("ICON/add.png"));
+        // Thay đổi kích thước icon (ví dụ: 30x30 pixels)
+        Image scaledAddImage = addIcon.getImage().getScaledInstance(30, 30, Image.SCALE_SMOOTH);
+        ImageIcon scaledAddIcon = new ImageIcon(scaledAddImage);
+        // Đặt icon cho nút
+        btnAdd.setIcon(scaledAddIcon);
         panelForm.add(btnAdd);
         btnAdd.addActionListener(e -> addQuestion());
 
@@ -113,7 +128,15 @@ public class QuestionForm extends JFrame {
         btnUpdate.setFont(new Font("Times New Roman", Font.PLAIN, 18));
         btnUpdate.setBounds(630, 66, 126, 46);
         btnUpdate.setHorizontalAlignment(SwingConstants.LEFT);
-        btnUpdate.setIcon(new ImageIcon(getClass().getClassLoader().getResource("ICON/edit.png")));
+        // Lấy icon từ đường dẫn
+        ImageIcon editIcon = new ImageIcon(getClass().getClassLoader().getResource("ICON/edit.png"));
+
+        // Thay đổi kích thước icon (ví dụ: 30x30 pixels)
+        Image scaledEditImage = editIcon.getImage().getScaledInstance(30, 30, Image.SCALE_SMOOTH);
+        ImageIcon scaledEditIcon = new ImageIcon(scaledEditImage);
+
+        // Đặt icon cho nút
+        btnUpdate.setIcon(scaledEditIcon);
         panelForm.add(btnUpdate);
         btnUpdate.addActionListener(e -> updateQuestion());
 
@@ -122,28 +145,37 @@ public class QuestionForm extends JFrame {
         btnDelete.setFont(new Font("Times New Roman", Font.PLAIN, 18));
         btnDelete.setBounds(630, 133, 126, 46);
         btnDelete.setHorizontalAlignment(SwingConstants.LEFT);
-        btnDelete.setIcon(new ImageIcon(getClass().getClassLoader().getResource("ICON/delete.png")));
+        // Lấy icon từ đường dẫn
+        ImageIcon deleteIcon = new ImageIcon(getClass().getClassLoader().getResource("ICON/delete.png"));
+
+        // Thay đổi kích thước icon (ví dụ: 30x30 pixels)
+        Image scaledDeleteImage = deleteIcon.getImage().getScaledInstance(30, 30, Image.SCALE_SMOOTH);
+        ImageIcon scaledDeleteIcon = new ImageIcon(scaledDeleteImage);
+
+        // Đặt icon cho nút
+        btnDelete.setIcon(scaledDeleteIcon);
         panelForm.add(btnDelete);
         loadTopics();
         loadQuestions();
         addTableSelectionListener();
-                lblPicture = new JLabel();
-                lblPicture.setBounds(30, 12, 112, 102);
-                panelForm.add(lblPicture);
-                lblPicture.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-                
-                search = new JTextField();
-                search.setFont(new Font("Times New Roman", Font.PLAIN, 18));
-                search.setBounds(459, 21, 311, 46);
-                getContentPane().add(search);
-                search.setColumns(10);
-                
-                JComboBox comboBox = new JComboBox();
-                comboBox.setFont(new Font("Times New Roman", Font.PLAIN, 18));
-                comboBox.setBounds(331, 20, 111, 46);
-                getContentPane().add(comboBox);
+        lblPicture = new JLabel();
+        lblPicture.setBounds(30, 12, 112, 102);
+        panelForm.add(lblPicture);
+        lblPicture.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+
+        search = new JTextField();
+        search.setFont(new Font("Times New Roman", Font.PLAIN, 18));
+        search.setBounds(459, 21, 311, 46);
+        getContentPane().add(search);
+        search.setColumns(10);
+
+        JComboBox comboBox = new JComboBox();
+        comboBox.setFont(new Font("Times New Roman", Font.PLAIN, 18));
+        comboBox.setBounds(331, 20, 111, 46);
+        getContentPane().add(comboBox);
         btnDelete.addActionListener(e -> deleteQuestion());
     }
+
     public String saveImageToFolder(String sourcePath) throws IOException {
         // Thư mục IMAGE trong src
         String folderPath = "src/IMAGE";
@@ -186,21 +218,68 @@ public class QuestionForm extends JFrame {
     }
 
     private void addQuestion() {
-        try {
-            String content = txtContent.getText();
-            int topic =topicBUS.findTopicByTitle((String) cbTopic.getSelectedItem()).getTpID();
-            String level = (String) cbLevel.getSelectedItem();
+        // Mở hộp thoại chọn file Excel
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setFileFilter(new FileNameExtensionFilter("Excel Files", "xlsx", "xls"));
+        int result = fileChooser.showOpenDialog(this);
 
-            if (content.isEmpty()) {
-                JOptionPane.showMessageDialog(this, "Nội dung không được để trống");
-                return;
+        if (result == JFileChooser.APPROVE_OPTION) {
+            File selectedFile = fileChooser.getSelectedFile();
+
+            try {
+                // Đọc dữ liệu từ file Excel
+                List<QuestionEntity> questions = readQuestionsFromExcel(selectedFile.getAbsolutePath());
+
+                // Thêm từng câu hỏi vào cơ sở dữ liệu
+                for (QuestionEntity question : questions) {
+                    questionBUS.createQuestion(question);
+                }
+
+                // Thông báo thành công
+                JOptionPane.showMessageDialog(this, "Đã thêm " + questions.size() + " câu hỏi từ file Excel.");
+
+                // Tải lại danh sách câu hỏi
+                loadQuestions();
+            } catch (IOException e) {
+                JOptionPane.showMessageDialog(this, "Lỗi khi đọc file Excel: " + e.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
             }
-            QuestionEntity question = new QuestionEntity(0, content, imagePath, topic, level,1);
-        new AnswerForm(question,this);
-        dispose();
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, "Lỗi khi thêm câu hỏi: " + e.getMessage());
         }
+    }
+
+    public List<QuestionEntity> readQuestionsFromExcel(String filePath) throws IOException {
+        List<QuestionEntity> questions = new ArrayList<>();
+
+        // Mở file Excel
+        try (FileInputStream file = new FileInputStream(new File(filePath));
+             Workbook workbook = new XSSFWorkbook(file)) {
+
+            // Lấy sheet đầu tiên
+            Sheet sheet = workbook.getSheetAt(0);
+
+            // Duyệt qua các dòng (bỏ qua dòng tiêu đề)
+            for (int i = 1; i <= sheet.getLastRowNum(); i++) {
+                Row row = sheet.getRow(i);
+
+                // Đọc dữ liệu từ các cột
+                String content = row.getCell(0).getStringCellValue();
+                String topic = row.getCell(1).getStringCellValue();
+                String level = row.getCell(2).getStringCellValue();
+                String picturePath = row.getCell(3).getStringCellValue();
+
+                // Tạo đối tượng QuestionEntity
+                QuestionEntity question = new QuestionEntity();
+                question.setqContent(content);
+                question.setqTopicID(topicBUS.findTopicByTitle(topic).getTpID()); // Chuyển đổi tên topic thành ID
+                question.setqLevel(level);
+                question.setqPictures(picturePath);
+                question.setqStatus(1); // Mặc định status là 1
+
+                // Thêm vào danh sách
+                questions.add(question);
+            }
+        }
+
+        return questions;
     }
 
     private void updateQuestion() {
@@ -236,7 +315,7 @@ public class QuestionForm extends JFrame {
         }
     }
 
-        private void deleteQuestion(){
+    private void deleteQuestion() {
         try {
             int selectedRow = table.getSelectedRow();
             if (selectedRow == -1) {
@@ -251,12 +330,14 @@ public class QuestionForm extends JFrame {
             JOptionPane.showMessageDialog(this, "Lỗi khi xóa câu hỏi: " + e.getMessage());
         }
     }
+
     private void loadTopics() {
         cbTopic.removeAllItems(); // Xóa dữ liệu cũ trước khi tải mới
         for (TopicEntity topic : topicBUS.getAllTopic()) {
             cbTopic.addItem(topic.getTpTitle());
         }
     }
+
     public void clearFields() {
         txtContent.setText("");
         lblPicture.setIcon(null);
@@ -264,17 +345,32 @@ public class QuestionForm extends JFrame {
         cbLevel.setSelectedIndex(0);
         imagePath = "";
     }
+
     public void loadQuestions() {
+        // Xóa dữ liệu cũ trong table
         model.setRowCount(0);
-        for (QuestionEntity q : questionBUS.getAllQuestion()) {
-            model.addRow(new Object[]{q.getqID(), q.getqContent(),topicBUS.findTopicById(q.getqTopicID()).getTpTitle(), q.getqLevel()});
+
+        List<QuestionEntity> questions = questionBUS.getAllQuestion();
+        // Đổ dữ liệu vào JTable
+        for (QuestionEntity question : questions) {
+            // Lấy thông tin chủ đề (topic) từ TopicBUS
+            String topicTitle = topicBUS.findTopicById(question.getqTopicID()).getTpTitle();
+
+            // Thêm dòng dữ liệu vào table
+            model.addRow(new Object[]{
+                    question.getqID(),
+                    question.getqContent(),
+                    topicTitle,
+                    question.getqLevel()
+            });
         }
     }
+
     private void addTableSelectionListener() {
         table.getSelectionModel().addListSelectionListener(event -> {
             int selectedRow = table.getSelectedRow();
             if (selectedRow != -1) { // Kiểm tra có hàng nào được chọn không
-                QuestionEntity questionEntity=questionBUS.findQuestionById(Integer.parseInt(model.getValueAt(selectedRow, 0).toString()));
+                QuestionEntity questionEntity = questionBUS.findQuestionById(Integer.parseInt(model.getValueAt(selectedRow, 0).toString()));
                 ImageIcon imageIcon = new ImageIcon(new ImageIcon(questionEntity.getqPictures()).getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH));
                 lblPicture.setIcon(imageIcon);
                 txtContent.setText(model.getValueAt(selectedRow, 1).toString());

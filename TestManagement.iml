@@ -19,5 +19,9 @@
     <orderEntry type="library" name="lombok" level="project" />
     <orderEntry type="library" name="lombok" level="project" />
     <orderEntry type="library" name="mysql-connector-j-9.2.0" level="project" />
+    <orderEntry type="library" name="xmlbeans-5.3.0" level="project" />
+    <orderEntry type="library" name="poi-5.4.0" level="project" />
+    <orderEntry type="library" name="poi-ooxml-5.4.0" level="project" />
+    <orderEntry type="library" name="poi-ooxml-schemas-4.1.2" level="project" />
   </component>
 </module>
