@@ -16,6 +16,7 @@ import java.io.File;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class AnswerForm extends JFrame {
     private JTextField txtContent;
@@ -25,15 +26,15 @@ public class AnswerForm extends JFrame {
     private DefaultTableModel model;
     private JButton btnAdd, btnUpdate, btnDelete, btnUpload;
     private String imagePath = "";
-    private List<AnswerEntity> answerList = new ArrayList<>();
     private QuestionEntity questionEntity;
-    private QuestionForm questionForm;
-    private QuestionBUS questionBUS=new QuestionBUS();
+    private QuestionForm questionForm=new QuestionForm();
     private AnswerBUS answerBUS=new AnswerBUS();
-    public AnswerForm(QuestionEntity question,QuestionForm form) {
+    public  AnswerForm(QuestionEntity questionEntity,QuestionForm form){
+
+    }
+    public AnswerForm(QuestionEntity question) {
     	getContentPane().setBackground(new Color(255, 255, 255));
         this.questionEntity=question;
-        this.questionForm=form;
         setTitle("Quản lý Câu Trả Lời");
         setSize(803, 663);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -44,7 +45,7 @@ public class AnswerForm extends JFrame {
         scrollPane.setBounds(10, 76, 760, 250);
         getContentPane().add(scrollPane);
 
-        model = new DefaultTableModel(new String[]{ "Content","Is Right"}, 0);
+        model = new DefaultTableModel(new String[]{ "Id","Content","Is Right"}, 0);
         table = new JTable(new DefaultTableModel(
         	new Object[][] {
         	},
@@ -120,7 +121,7 @@ public class AnswerForm extends JFrame {
         JButton add_AnswerQuest = new JButton("Lưu");
         add_AnswerQuest.setFont(new Font("Times New Roman", Font.PLAIN, 18));
         add_AnswerQuest.setBounds(630, 194, 126, 46);
-        add_AnswerQuest.addActionListener(e->createQuestion());
+//        add_AnswerQuest.addActionListener(e->createQuestion());
         panelForm.add(add_AnswerQuest);
         
         JLabel lblThmCuHi = new JLabel("Thêm câu hỏi");
@@ -153,27 +154,52 @@ public class AnswerForm extends JFrame {
     }
 
     private void addAnswer() {
-        String content = txtContent.getText();
-        String isRight = (String) cbIsRight.getSelectedItem();
-        String savedImagePath = imagePath.isEmpty() ? "" : imagePath;
-        AnswerEntity answer = new AnswerEntity(0, 0,content, savedImagePath, isRight=="True"?1:0,1);
-        answerList.add(answer);
-        model.addRow(new Object[]{ answer.getAwContent(), answer.getIsRight()==1?"True":"False"});
-        clearFields();
+        try {
+            String content = txtContent.getText();
+            if (content.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Nội dung không được để trống");
+                return;
+            }
+            String savedImagePath = "";
+            if (!imagePath.isEmpty()) {
+                savedImagePath = questionForm.saveImageToFolder(imagePath); // Lưu ảnh vào thư mục IMAGE
+            }
+            String isRight = (String) cbIsRight.getSelectedItem();
+            AnswerEntity answer = new AnswerEntity(0, questionEntity.getqID(),content, savedImagePath, isRight=="True"?1:0,1);
+            answerBUS.createAnswer(answer);
+            loadAnswer();
+            clearFields();
+        }catch (Exception e){
+            JOptionPane.showMessageDialog(this, "Lỗi khi thêm câu hỏi " + e.getMessage());
+        }
+
     }
 
     private void updateAnswer() {
-        int selectedRow = table.getSelectedRow();
-        if (selectedRow == -1) {
-            JOptionPane.showMessageDialog(this, "Vui lòng chọn câu trả lời để sửa");
-            return;
+        try{
+            int selectedRow = table.getSelectedRow();
+            if (selectedRow == -1) {
+                JOptionPane.showMessageDialog(this, "Vui lòng chọn câu trả lời để sửa");
+                return;
+            }
+            int id = (int) table.getValueAt(selectedRow, 0);
+            AnswerEntity answer =answerBUS.findAnswerById(id);
+            String newImagePath = answer.getAwPictures(); // Giữ nguyên ảnh cũ mặc định
+
+            // Nếu người dùng chọn ảnh mới, lưu ảnh vào thư mục IMAGE và cập nhật đường dẫn
+            if (!imagePath.isEmpty()) {
+                newImagePath = questionForm.saveImageToFolder(imagePath);
+            }
+            answer.setAwContent(txtContent.getText());
+            answer.setAwPictures(imagePath.isEmpty() ? answer.getAwPictures() : imagePath);
+            answer.setIsRight(cbIsRight.getSelectedItem()=="True"?1:0);
+            answerBUS.updateAnswer(answer);
+            clearFields();
+            loadAnswer();
+        }catch (Exception e){
+            JOptionPane.showMessageDialog(this, "Lỗi khi thêm câu hỏi " + e.getMessage());
         }
-        AnswerEntity answer = answerList.get(selectedRow);
-        answer.setAwContent(txtContent.getText());
-        answer.setAwPictures(imagePath.isEmpty() ? answer.getAwPictures() : imagePath);
-        answer.setIsRight(cbIsRight.getSelectedItem()=="True"?1:0);
-        model.setValueAt(answer.getAwContent(), selectedRow, 0);
-        model.setValueAt(answer.getIsRight()==1?"True":"False", selectedRow, 1);
+
     }
 
     private void deleteAnswer() {
@@ -182,35 +208,36 @@ public class AnswerForm extends JFrame {
             JOptionPane.showMessageDialog(this, "Vui lòng chọn câu trả lời để xóa");
             return;
         }
-        answerList.remove(selectedRow);
-        model.removeRow(selectedRow);
+        int id = (int) table.getValueAt(selectedRow, 0);
+        answerBUS.removeAnswer(id);
+        loadAnswer();
     }
-    private void createQuestion() {
-        try {
-            // Kiểm tra nếu có ảnh được chọn
-            String savedImagePath = "";
-            if (!questionEntity.getqPictures().isEmpty()) {
-                savedImagePath = questionForm.saveImageToFolder(questionEntity.getqPictures()); // Lưu ảnh vào thư mục IMAGE
-            }
-            questionEntity.setqPictures(savedImagePath);
-            // Thêm câu hỏi vào DB
-          long questId=  questionBUS.createQuestion(questionEntity);
-            for(AnswerEntity answerEntity:answerList){
-                answerEntity.setqID((int) questId);
-               String temp="";
-                if (!answerEntity.getAwPictures().isEmpty()) {
-                    temp = questionForm.saveImageToFolder(answerEntity.getAwPictures()); // Lưu ảnh vào thư mục IMAGE
-                }
-                answerEntity.setAwPictures(temp);
-                answerBUS.createAnswer(answerEntity);
-            }
-            new QuestionForm();
-            dispose();
-        } catch (Exception e) {
-
-            JOptionPane.showMessageDialog(this, "Lỗi khi thêm câu hỏi và các câu trả lời: " + e.getMessage());
-        }
-    }
+//    private void createQuestion() {
+//        try {
+//            // Kiểm tra nếu có ảnh được chọn
+//            String savedImagePath = "";
+//            if (!questionEntity.getqPictures().isEmpty()) {
+//                savedImagePath = questionForm.saveImageToFolder(questionEntity.getqPictures()); // Lưu ảnh vào thư mục IMAGE
+//            }
+//            questionEntity.setqPictures(savedImagePath);
+//            // Thêm câu hỏi vào DB
+//          long questId=  questionBUS.createQuestion(questionEntity);
+//            for(AnswerEntity answerEntity:answerList){
+//                answerEntity.setqID((int) questId);
+//               String temp="";
+//                if (!answerEntity.getAwPictures().isEmpty()) {
+//                    temp = questionForm.saveImageToFolder(answerEntity.getAwPictures()); // Lưu ảnh vào thư mục IMAGE
+//                }
+//                answerEntity.setAwPictures(temp);
+//                answerBUS.createAnswer(answerEntity);
+//            }
+//            new QuestionForm();
+//            dispose();
+//        } catch (Exception e) {
+//
+//            JOptionPane.showMessageDialog(this, "Lỗi khi thêm câu hỏi và các câu trả lời: " + e.getMessage());
+//        }
+//    }
     public void clearFields() {
         txtContent.setText("");
         lblPicture.setIcon(null);
@@ -221,7 +248,8 @@ public class AnswerForm extends JFrame {
         table.getSelectionModel().addListSelectionListener(event -> {
             int selectedRow = table.getSelectedRow();
             if (selectedRow != -1) { // Kiểm tra có hàng nào được chọn không
-                AnswerEntity answerEntity=answerList.get(table.getSelectedRow());
+                int id = (int) table.getValueAt(selectedRow, 0);
+                AnswerEntity answerEntity =answerBUS.findAnswerById(id);
                 ImageIcon imageIcon = new ImageIcon(new ImageIcon(answerEntity.getAwPictures()).getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH));
                 lblPicture.setIcon(imageIcon);
                 txtContent.setText(answerEntity.getAwContent());
@@ -229,6 +257,13 @@ public class AnswerForm extends JFrame {
 
             }
         });
+    }
+    public void loadAnswer() {
+        List<AnswerEntity>list=answerBUS.getAllAnswer().stream().filter(answerEntity -> answerEntity.getqID()==questionEntity.getqID()).toList();
+        model.setRowCount(0);
+        for (AnswerEntity answerEntity:list) {
+            model.addRow(new Object[]{answerEntity.getAwID(),answerEntity.getAwContent(),answerEntity.getIsRight()==1?"True":"Flase"});
+        }
     }
     public static void main(String[] args) {
 //        SwingUtilities.invokeLater(() -> new AnswerForm().setVisible(true));

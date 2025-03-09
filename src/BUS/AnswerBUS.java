@@ -23,6 +23,20 @@ public class AnswerBUS implements IAnswerBUS {
     @Override
     public boolean createAnswer(AnswerEntity answer) {
          answerDAO.insert(answer);
-         return false;
+         return true;
     }
+
+    @Override
+    public boolean updateAnswer(AnswerEntity answer) {
+        answerDAO.update(answer);
+        return true;
+    }
+
+    @Override
+    public boolean removeAnswer(int id) {
+         answerDAO.delete(id);
+         return true;
+    }
+
+
 }
