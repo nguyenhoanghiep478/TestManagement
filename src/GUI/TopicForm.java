@@ -64,7 +64,7 @@ public class TopicForm extends JFrame {
         cbTopicParent = new JComboBox<>();
         cbTopicParent.setBackground(new Color(255, 255, 255));
         cbTopicParent.setFont(new Font("Times New Roman", Font.PLAIN, 16));
-        cbTopicParent.setBounds(505, 10, 132, 46);
+        cbTopicParent.setBounds(505, 10, 155, 46);
         panelForm.add(cbTopicParent);
         loadTopicParents(); // Load dữ liệu cho combobox
 

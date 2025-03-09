@@ -45,7 +45,7 @@ public class QuestionForm extends JFrame {
         getContentPane().setLayout(null);
 
         JScrollPane scrollPane = new JScrollPane();
-        scrollPane.setBounds(10, 76, 760, 250);
+        scrollPane.setBounds(10, 76, 778, 250);
         getContentPane().add(scrollPane);
 
         model = new DefaultTableModel(new String[]{"Id", "Content", "Topic", "Level"}, 0);
@@ -58,52 +58,52 @@ public class QuestionForm extends JFrame {
         JPanel panelForm = new JPanel();
         panelForm.setBackground(new Color(255, 255, 255));
         panelForm.setLayout(null);
-        panelForm.setBounds(10, 352, 766, 271);
+        panelForm.setBounds(10, 352, 778, 271);
         getContentPane().add(panelForm);
 
         JLabel lblContent = new JLabel("Content:");
         lblContent.setFont(new Font("Times New Roman", Font.PLAIN, 18));
-        lblContent.setBounds(251, 18, 80, 25);
+        lblContent.setBounds(195, 20, 80, 25);
         panelForm.add(lblContent);
 
         txtContent = new JTextField();
         txtContent.setFont(new Font("Times New Roman", Font.PLAIN, 18));
-        txtContent.setBounds(331, 10, 267, 46);
+        txtContent.setBounds(273, 10, 320, 46);
         panelForm.add(txtContent);
 
         JLabel lblTopic = new JLabel("Topic:");
         lblTopic.setFont(new Font("Times New Roman", Font.PLAIN, 18));
-        lblTopic.setBounds(251, 77, 80, 25);
+        lblTopic.setBounds(195, 77, 80, 25);
         panelForm.add(lblTopic);
 
         cbTopic = new JComboBox<>(new String[]{"Toán", "Lý", "Hóa", "Sinh"});
         cbTopic.setBackground(new Color(255, 255, 255));
         cbTopic.setFont(new Font("Times New Roman", Font.PLAIN, 18));
-        cbTopic.setBounds(331, 66, 150, 46);
+        cbTopic.setBounds(271, 66, 150, 46);
         panelForm.add(cbTopic);
 
         JLabel lblLevel = new JLabel("Level:");
         lblLevel.setFont(new Font("Times New Roman", Font.PLAIN, 18));
-        lblLevel.setBounds(251, 133, 80, 25);
+        lblLevel.setBounds(195, 133, 80, 25);
         panelForm.add(lblLevel);
 
         cbLevel = new JComboBox<>(new String[]{"Easy", "Medium", "Hard"});
         cbLevel.setBackground(new Color(255, 255, 255));
         cbLevel.setFont(new Font("Times New Roman", Font.PLAIN, 18));
-        cbLevel.setBounds(331, 122, 150, 46);
+        cbLevel.setBounds(271, 122, 150, 46);
         panelForm.add(cbLevel);
 
         btnUpload = new JButton("Chọn ảnh");
         btnUpload.setBackground(new Color(255, 255, 255));
         btnUpload.setFont(new Font("Times New Roman", Font.PLAIN, 18));
-        btnUpload.setBounds(30, 123, 112, 46);
+        btnUpload.setBounds(10, 122, 112, 46);
         panelForm.add(btnUpload);
         btnUpload.addActionListener(e -> uploadImage());
 
         btnAdd = new JButton("Thêm");
         btnAdd.setBackground(new Color(255, 255, 255));
         btnAdd.setFont(new Font("Times New Roman", Font.PLAIN, 18));
-        btnAdd.setBounds(630, 7, 126, 46);
+        btnAdd.setBounds(642, 9, 126, 46);
         btnAdd.setHorizontalAlignment(SwingConstants.LEFT);
         btnAdd.setIcon(new ImageIcon(getClass().getClassLoader().getResource("ICON/add.png")));
         panelForm.add(btnAdd);
@@ -112,7 +112,7 @@ public class QuestionForm extends JFrame {
         btnUpdate = new JButton("Sửa");
         btnUpdate.setBackground(new Color(255, 255, 255));
         btnUpdate.setFont(new Font("Times New Roman", Font.PLAIN, 18));
-        btnUpdate.setBounds(630, 66, 126, 46);
+        btnUpdate.setBounds(642, 66, 126, 46);
         btnUpdate.setHorizontalAlignment(SwingConstants.LEFT);
         btnUpdate.setIcon(new ImageIcon(getClass().getClassLoader().getResource("ICON/edit.png")));
         panelForm.add(btnUpdate);
@@ -121,7 +121,7 @@ public class QuestionForm extends JFrame {
         btnDelete = new JButton("Xóa");
         btnDelete.setBackground(new Color(255, 255, 255));
         btnDelete.setFont(new Font("Times New Roman", Font.PLAIN, 18));
-        btnDelete.setBounds(630, 133, 126, 46);
+        btnDelete.setBounds(642, 122, 126, 46);
         btnDelete.setHorizontalAlignment(SwingConstants.LEFT);
         btnDelete.setIcon(new ImageIcon(getClass().getClassLoader().getResource("ICON/delete.png")));
         panelForm.add(btnDelete);
@@ -129,12 +129,12 @@ public class QuestionForm extends JFrame {
         loadQuestions(questionBUS.getAllQuestion());
         addTableSelectionListener();
                 lblPicture = new JLabel();
-                lblPicture.setBounds(30, 12, 112, 102);
+                lblPicture.setBounds(10, 10, 112, 102);
                 panelForm.add(lblPicture);
                 lblPicture.setBorder(BorderFactory.createLineBorder(Color.BLACK));
                 
                 JButton viewAnswer = new JButton("Chi tiết");
-                viewAnswer.setBounds(630, 194, 126, 46);
+                viewAnswer.setBounds(642, 179, 126, 46);
                 viewAnswer.setIcon(new ImageIcon(getClass().getClassLoader().getResource("ICON/detail.png")));
                 panelForm.add(viewAnswer);
                 
@@ -145,7 +145,7 @@ public class QuestionForm extends JFrame {
                 
                 search = new JTextField();
                 search.setFont(new Font("Times New Roman", Font.PLAIN, 18));
-                search.setBounds(384, 20, 249, 46);
+                search.setBounds(384, 20, 268, 46);
                 getContentPane().add(search);
                 search.setColumns(10);
 
@@ -161,7 +161,7 @@ public class QuestionForm extends JFrame {
                 btn_search.setFont(new Font("Times New Roman", Font.PLAIN, 18));
                 btn_search.setBackground(Color.WHITE);
              btn_search.setIcon(new ImageIcon(getClass().getClassLoader().getResource("ICON/search.png")));
-                btn_search.setBounds(644, 19, 126, 46);
+                btn_search.setBounds(662, 20, 126, 46);
                 btn_search.addActionListener(e->search());
                 getContentPane().add(btn_search);
         btnDelete.addActionListener(e -> deleteQuestion());

@@ -39,7 +39,7 @@ public class AnswerForm extends JFrame {
         getContentPane().setLayout(null);
 
         JScrollPane scrollPane = new JScrollPane();
-        scrollPane.setBounds(10, 76, 760, 250);
+        scrollPane.setBounds(10, 76, 769, 250);
         getContentPane().add(scrollPane);
 
         model = new DefaultTableModel(new String[]{ "Id","Content","Is Right"}, 0);
@@ -56,28 +56,28 @@ public class AnswerForm extends JFrame {
 
         JLabel lblContent = new JLabel("Content:");
         lblContent.setFont(new Font("Times New Roman", Font.PLAIN, 18));
-        lblContent.setBounds(251, 18, 80, 25);
+        lblContent.setBounds(189, 20, 80, 25);
         panelForm.add(lblContent);
 
         txtContent = new JTextField();
         txtContent.setFont(new Font("Times New Roman", Font.PLAIN, 18));
-        txtContent.setBounds(331, 10, 267, 46);
+        txtContent.setBounds(267, 10, 341, 46);
         panelForm.add(txtContent);
 
         JLabel lblIsRight = new JLabel("Is Right:");
         lblIsRight.setFont(new Font("Times New Roman", Font.PLAIN, 18));
-        lblIsRight.setBounds(251, 77, 80, 25);
+        lblIsRight.setBounds(189, 77, 80, 25);
         panelForm.add(lblIsRight);
 
         cbIsRight = new JComboBox<>(new String[]{"True", "False"});
         cbIsRight.setBackground(new Color(255, 255, 255));
         cbIsRight.setFont(new Font("Times New Roman", Font.PLAIN, 18));
-        cbIsRight.setBounds(331, 66, 150, 46);
+        cbIsRight.setBounds(267, 69, 150, 46);
         panelForm.add(cbIsRight);
 
         btnUpload = new JButton("Chọn ảnh");
         btnUpload.setFont(new Font("Times New Roman", Font.PLAIN, 18));
-        btnUpload.setBounds(30, 123, 116, 46);
+        btnUpload.setBounds(10, 125, 116, 46);
         panelForm.add(btnUpload);
         btnUpload.addActionListener(e -> uploadImage());
 
@@ -106,7 +106,7 @@ public class AnswerForm extends JFrame {
         btnDelete.addActionListener(e -> deleteAnswer());
 
         lblPicture = new JLabel();
-        lblPicture.setBounds(30, 12, 116, 97);
+        lblPicture.setBounds(10, 18, 116, 97);
         panelForm.add(lblPicture);
         lblPicture.setBorder(BorderFactory.createLineBorder(Color.BLACK));
         loadAnswer();
