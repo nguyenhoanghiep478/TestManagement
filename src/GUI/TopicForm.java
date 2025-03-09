@@ -41,6 +41,9 @@ public class TopicForm extends JFrame {
         table.setFont(new Font("Times New Roman", Font.PLAIN, 18));
         table.setRowHeight(20);
         table.getTableHeader().setFont(new Font("Tahoma", Font.PLAIN, 16));
+        scrollPane.getViewport().setBackground(Color.WHITE);
+        table.getTableHeader().setBackground(Color.WHITE);
+        table.setBackground(new Color(255, 255, 255));
         scrollPane.setViewportView(table);
 
         JPanel panelForm = new JPanel();
@@ -55,13 +58,13 @@ public class TopicForm extends JFrame {
         panelForm.add(lblTopicName);
         JLabel lblTopicParent = new JLabel("Topic parent");
         lblTopicParent.setFont(new Font("Times New Roman", Font.PLAIN, 18));
-        lblTopicParent.setBounds(420, 20, 100, 25);
+        lblTopicParent.setBounds(395, 20, 100, 25);
         panelForm.add(lblTopicParent);
 
         cbTopicParent = new JComboBox<>();
         cbTopicParent.setBackground(new Color(255, 255, 255));
         cbTopicParent.setFont(new Font("Times New Roman", Font.PLAIN, 16));
-        cbTopicParent.setBounds(534, 9, 114, 46);
+        cbTopicParent.setBounds(505, 10, 132, 46);
         panelForm.add(cbTopicParent);
         loadTopicParents(); // Load dữ liệu cho combobox
 

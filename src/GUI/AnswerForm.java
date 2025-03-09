@@ -29,9 +29,6 @@ public class AnswerForm extends JFrame {
     private QuestionEntity questionEntity;
     private QuestionForm questionForm=new QuestionForm();
     private AnswerBUS answerBUS=new AnswerBUS();
-    public  AnswerForm(QuestionEntity questionEntity,QuestionForm form){
-
-    }
     public AnswerForm(QuestionEntity question) {
     	getContentPane().setBackground(new Color(255, 255, 255));
         this.questionEntity=question;
@@ -46,13 +43,7 @@ public class AnswerForm extends JFrame {
         getContentPane().add(scrollPane);
 
         model = new DefaultTableModel(new String[]{ "Id","Content","Is Right"}, 0);
-        table = new JTable(new DefaultTableModel(
-        	new Object[][] {
-        	},
-        	new String[] {
-        		"Content", "Is Right"
-        	}
-        ));
+        table = new JTable(model);
         table.setFont(new Font("Times New Roman", Font.PLAIN, 18));
         scrollPane.setViewportView(table);
         scrollPane.getViewport().setBackground(Color.WHITE);
@@ -69,6 +60,7 @@ public class AnswerForm extends JFrame {
         panelForm.add(lblContent);
 
         txtContent = new JTextField();
+        txtContent.setFont(new Font("Times New Roman", Font.PLAIN, 18));
         txtContent.setBounds(331, 10, 267, 46);
         panelForm.add(txtContent);
 
@@ -117,17 +109,11 @@ public class AnswerForm extends JFrame {
         lblPicture.setBounds(30, 12, 116, 97);
         panelForm.add(lblPicture);
         lblPicture.setBorder(BorderFactory.createLineBorder(Color.BLACK));
-        
-        JButton add_AnswerQuest = new JButton("Lưu");
-        add_AnswerQuest.setFont(new Font("Times New Roman", Font.PLAIN, 18));
-        add_AnswerQuest.setBounds(630, 194, 126, 46);
-//        add_AnswerQuest.addActionListener(e->createQuestion());
-        panelForm.add(add_AnswerQuest);
-        
-        JLabel lblThmCuHi = new JLabel("Thêm câu hỏi");
+        loadAnswer();
+        JLabel lblThmCuHi = new JLabel("Quản lý câu trả lời");
         lblThmCuHi.setHorizontalAlignment(SwingConstants.CENTER);
         lblThmCuHi.setFont(new Font("Times New Roman", Font.BOLD, 26));
-        lblThmCuHi.setBounds(182, 10, 344, 56);
+        lblThmCuHi.setBounds(233, 10, 344, 56);
         getContentPane().add(lblThmCuHi);
         addTableSelectionListener();
         setVisible(true);
@@ -167,6 +153,7 @@ public class AnswerForm extends JFrame {
             String isRight = (String) cbIsRight.getSelectedItem();
             AnswerEntity answer = new AnswerEntity(0, questionEntity.getqID(),content, savedImagePath, isRight=="True"?1:0,1);
             answerBUS.createAnswer(answer);
+            JOptionPane.showMessageDialog(this, "Thêm câu trả lời thành công");
             loadAnswer();
             clearFields();
         }catch (Exception e){
@@ -191,7 +178,7 @@ public class AnswerForm extends JFrame {
                 newImagePath = questionForm.saveImageToFolder(imagePath);
             }
             answer.setAwContent(txtContent.getText());
-            answer.setAwPictures(imagePath.isEmpty() ? answer.getAwPictures() : imagePath);
+            answer.setAwPictures(newImagePath);
             answer.setIsRight(cbIsRight.getSelectedItem()=="True"?1:0);
             answerBUS.updateAnswer(answer);
             clearFields();
@@ -259,6 +246,7 @@ public class AnswerForm extends JFrame {
         });
     }
     public void loadAnswer() {
+        List<AnswerEntity>g=answerBUS.getAllAnswer();
         List<AnswerEntity>list=answerBUS.getAllAnswer().stream().filter(answerEntity -> answerEntity.getqID()==questionEntity.getqID()).toList();
         model.setRowCount(0);
         for (AnswerEntity answerEntity:list) {

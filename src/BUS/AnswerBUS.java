@@ -17,7 +17,7 @@ public class AnswerBUS implements IAnswerBUS {
 
     @Override
     public List<AnswerEntity> getAllAnswer() {
-        return new ArrayList<>();
+        return answerDAO.findAll();
     }
 
     @Override

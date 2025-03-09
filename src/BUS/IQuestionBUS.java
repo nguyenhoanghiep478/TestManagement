@@ -11,4 +11,5 @@ public interface IQuestionBUS {
     long createQuestion(QuestionEntity question);
     boolean updateQuestion(QuestionEntity question);
     boolean deleteQuestion(int questionId);
+    List<QuestionEntity>searchByField(String field,String content);
 }

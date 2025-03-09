@@ -22,11 +22,12 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
+import java.util.List;
 
 public class QuestionForm extends JFrame {
     private JTextField txtContent;
     private JLabel lblPicture;
-    private JComboBox<String> cbTopic, cbLevel;
+    private JComboBox<String> cbTopic, cbLevel,comboBoxSearch;
     private JTable table;
     private DefaultTableModel model;
     private JButton btnAdd, btnUpdate, btnDelete, btnUpload;
@@ -38,7 +39,7 @@ public class QuestionForm extends JFrame {
     public QuestionForm() {
     	getContentPane().setBackground(new Color(255, 255, 255));
         setTitle("Quản lý Câu Hỏi");
-        setSize(800, 600);
+        setSize(812, 683);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
         getContentPane().setLayout(null);
@@ -57,7 +58,7 @@ public class QuestionForm extends JFrame {
         JPanel panelForm = new JPanel();
         panelForm.setBackground(new Color(255, 255, 255));
         panelForm.setLayout(null);
-        panelForm.setBounds(10, 352, 766, 201);
+        panelForm.setBounds(10, 352, 766, 271);
         getContentPane().add(panelForm);
 
         JLabel lblContent = new JLabel("Content:");
@@ -125,23 +126,44 @@ public class QuestionForm extends JFrame {
         btnDelete.setIcon(new ImageIcon(getClass().getClassLoader().getResource("ICON/delete.png")));
         panelForm.add(btnDelete);
         loadTopics();
-        loadQuestions();
+        loadQuestions(questionBUS.getAllQuestion());
         addTableSelectionListener();
                 lblPicture = new JLabel();
                 lblPicture.setBounds(30, 12, 112, 102);
                 panelForm.add(lblPicture);
                 lblPicture.setBorder(BorderFactory.createLineBorder(Color.BLACK));
                 
+                JButton viewAnswer = new JButton("Chi tiết");
+                viewAnswer.setBounds(630, 194, 126, 46);
+                viewAnswer.setIcon(new ImageIcon(getClass().getClassLoader().getResource("ICON/detail.png")));
+                panelForm.add(viewAnswer);
+                
+                                viewAnswer.setHorizontalAlignment(SwingConstants.LEFT);
+                                viewAnswer.setFont(new Font("Times New Roman", Font.PLAIN, 17));
+                                viewAnswer.setBackground(Color.WHITE);
+                                viewAnswer.addActionListener(e->viewAnswer());
+                
                 search = new JTextField();
                 search.setFont(new Font("Times New Roman", Font.PLAIN, 18));
-                search.setBounds(459, 21, 311, 46);
+                search.setBounds(384, 20, 249, 46);
                 getContentPane().add(search);
                 search.setColumns(10);
+
                 
-                JComboBox comboBox = new JComboBox();
-                comboBox.setFont(new Font("Times New Roman", Font.PLAIN, 18));
-                comboBox.setBounds(331, 20, 111, 46);
-                getContentPane().add(comboBox);
+                comboBoxSearch = new JComboBox();
+                comboBoxSearch.setModel(new DefaultComboBoxModel(new String[] {"Id", "Content", "Topic"}));
+                comboBoxSearch.setFont(new Font("Times New Roman", Font.PLAIN, 18));
+                comboBoxSearch.setBounds(259, 20, 111, 46);
+                getContentPane().add(comboBoxSearch);
+                
+                JButton btn_search = new JButton("Search");
+                btn_search.setHorizontalAlignment(SwingConstants.LEFT);
+                btn_search.setFont(new Font("Times New Roman", Font.PLAIN, 18));
+                btn_search.setBackground(Color.WHITE);
+             btn_search.setIcon(new ImageIcon(getClass().getClassLoader().getResource("ICON/search.png")));
+                btn_search.setBounds(644, 19, 126, 46);
+                btn_search.addActionListener(e->search());
+                getContentPane().add(btn_search);
         btnDelete.addActionListener(e -> deleteQuestion());
     }
     public String saveImageToFolder(String sourcePath) throws IOException {
@@ -184,7 +206,11 @@ public class QuestionForm extends JFrame {
             lblPicture.setIcon(imageIcon);
         }
     }
-
+    private void search(){
+        String content=search.getText();
+        String field=comboBoxSearch.getSelectedItem().toString();
+        loadQuestions(questionBUS.searchByField(field,content));
+    }
     private void addQuestion() {
         try {
             String content = txtContent.getText();
@@ -195,9 +221,15 @@ public class QuestionForm extends JFrame {
                 JOptionPane.showMessageDialog(this, "Nội dung không được để trống");
                 return;
             }
+            String savedImagePath = "";
+            if (!imagePath.isEmpty()) {
+                savedImagePath = saveImageToFolder(imagePath); // Lưu ảnh vào thư mục IMAGE
+            }
             QuestionEntity question = new QuestionEntity(0, content, imagePath, topic, level,1);
-        new AnswerForm(question,this);
-        dispose();
+            questionBUS.createQuestion(question);
+            JOptionPane.showMessageDialog(this, "Thêm câu hỏi thành công thành công");
+            clearFields();
+            loadQuestions(questionBUS.getAllQuestion());
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this, "Lỗi khi thêm câu hỏi: " + e.getMessage());
         }
@@ -229,13 +261,24 @@ public class QuestionForm extends JFrame {
             QuestionEntity updatedQuestion = new QuestionEntity(id, content, newImagePath, topic, level, 1);
             questionBUS.updateQuestion(updatedQuestion);
 
-            loadQuestions();  // Tải lại danh sách câu hỏi
+            loadQuestions(questionBUS.getAllQuestion());  // Tải lại danh sách câu hỏi
             clearFields();    // Xóa dữ liệu nhập sau khi cập nhật
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this, "Lỗi khi cập nhật câu hỏi: " + e.getMessage());
         }
     }
+    private void viewAnswer(){
+        int selectedRow = table.getSelectedRow();
+        if (selectedRow == -1) {
+            JOptionPane.showMessageDialog(this, "Vui lòng chọn câu hỏi để xóa");
+            return;
+        }
 
+        int id = (int) table.getValueAt(selectedRow, 0);
+        QuestionEntity question=questionBUS.findQuestionById(id);
+        new AnswerForm(question);
+        dispose();
+    }
         private void deleteQuestion(){
         try {
             int selectedRow = table.getSelectedRow();
@@ -246,7 +289,7 @@ public class QuestionForm extends JFrame {
 
             int id = (int) table.getValueAt(selectedRow, 0);
             questionBUS.deleteQuestion(id);
-            loadQuestions();
+            loadQuestions(questionBUS.getAllQuestion());
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this, "Lỗi khi xóa câu hỏi: " + e.getMessage());
         }
@@ -264,9 +307,9 @@ public class QuestionForm extends JFrame {
         cbLevel.setSelectedIndex(0);
         imagePath = "";
     }
-    public void loadQuestions() {
+    public void loadQuestions(List<QuestionEntity>list) {
         model.setRowCount(0);
-        for (QuestionEntity q : questionBUS.getAllQuestion()) {
+        for (QuestionEntity q : list) {
             model.addRow(new Object[]{q.getqID(), q.getqContent(),topicBUS.findTopicById(q.getqTopicID()).getTpTitle(), q.getqLevel()});
         }
     }

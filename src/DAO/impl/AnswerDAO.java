@@ -4,15 +4,17 @@ import DAO.IAnswerDAO;
 import DAO.ITestDAO;
 import Entity.AnswerEntity;
 import Entity.Criteria;
+import Entity.QuestionEntity;
 import Entity.TestEntity;
 import Utils.Mapper.impl.AnswerMapper;
 import Utils.Mapper.impl.TestMapper;
 import lombok.RequiredArgsConstructor;
 
+import java.util.Collections;
 import java.util.List;
 @RequiredArgsConstructor
 public class AnswerDAO  extends AbstractDAO<AnswerEntity> implements IAnswerDAO {
-    private  AnswerMapper rowMapper;
+    private  AnswerMapper rowMapper=new AnswerMapper();
 
     @Override
     public void delete(int testID) {
@@ -22,10 +24,13 @@ public class AnswerDAO  extends AbstractDAO<AnswerEntity> implements IAnswerDAO 
 
     @Override
     public AnswerEntity findBy(int testID) {
-        List<Criteria> criterias = List.of(new Criteria("awID", ":", testID));
+        List<Criteria> criterias = List.of(new Criteria("awID", "=", testID));
         return searchBy(criterias, rowMapper, "answers").stream().findFirst().orElse(null);
     }
-
+    @Override
+    public List<AnswerEntity> findAll() {
+        return searchBy(Collections.emptyList(),rowMapper, "answers");
+    }
     @Override
     public long insert(AnswerEntity test) {
         String query = """

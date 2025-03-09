@@ -40,7 +40,7 @@ public class UserForm extends JFrame {
         table.setBackground(new Color(255, 255, 255));
         table.setFont(new Font("Times New Roman", Font.PLAIN, 18));
         table.setRowHeight(20);
-        table.getTableHeader().setFont(new Font("Tahoma", Font.PLAIN, 16));
+        table.getTableHeader().setFont(new Font("Times New Roman", Font.PLAIN, 18));
         scrollPane.getViewport().setBackground(Color.WHITE);
         table.getTableHeader().setBackground(Color.WHITE);
         scrollPane.setViewportView(table);
