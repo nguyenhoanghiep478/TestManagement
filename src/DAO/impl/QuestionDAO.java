@@ -65,4 +65,6 @@ public class QuestionDAO extends AbstractDAO<QuestionEntity> implements IQuestDA
                 result.getqID()
         );
     }
+
+
 }

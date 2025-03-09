@@ -4,6 +4,7 @@ import BUS.IQuestionBUS;
 import BUS.ITopicBUS;
 import BUS.QuestionBUS;
 import BUS.TopicBUS;
+import DAO.impl.QuestionDAO;
 import Entity.QuestionEntity;
 import Entity.TopicEntity;
 
@@ -29,6 +30,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 public class QuestionForm extends JFrame {
@@ -218,68 +220,42 @@ public class QuestionForm extends JFrame {
     }
 
     private void addQuestion() {
-        // Mở hộp thoại chọn file Excel
         JFileChooser fileChooser = new JFileChooser();
-        fileChooser.setFileFilter(new FileNameExtensionFilter("Excel Files", "xlsx", "xls"));
-        int result = fileChooser.showOpenDialog(this);
+        int returnVal = fileChooser.showOpenDialog(null);
+        if (returnVal == JFileChooser.APPROVE_OPTION) {
+            String filePath = fileChooser.getSelectedFile().getAbsolutePath();
+            try (FileInputStream fis = new FileInputStream(new File(filePath));
+                 Workbook workbook = new XSSFWorkbook(fis)) {
 
-        if (result == JFileChooser.APPROVE_OPTION) {
-            File selectedFile = fileChooser.getSelectedFile();
+                Sheet sheet = workbook.getSheetAt(0);
+                Iterator<Row> rowIterator = sheet.iterator();
+                rowIterator.next(); // Bỏ qua hàng tiêu đề
 
-            try {
-                // Đọc dữ liệu từ file Excel
-                List<QuestionEntity> questions = readQuestionsFromExcel(selectedFile.getAbsolutePath());
+                QuestionDAO questionDAO = new QuestionDAO(); // Dùng DAO để thao tác với database
 
-                // Thêm từng câu hỏi vào cơ sở dữ liệu
-                for (QuestionEntity question : questions) {
-                    questionBUS.createQuestion(question);
+                while (rowIterator.hasNext()) {
+                    Row row = rowIterator.next();
+                    QuestionEntity question = new QuestionEntity();
+
+                    question.setqContent(row.getCell(1).getStringCellValue());
+                    question.setqPictures(row.getCell(2).getStringCellValue());
+                    question.setqTopicID((int) row.getCell(3).getNumericCellValue());
+
+                    // Lấy level dưới dạng String
+                    question.setqLevel(row.getCell(4).getStringCellValue());
+
+                    question.setqStatus((int) row.getCell(5).getNumericCellValue());
+
+                    questionDAO.insert(question); // Gọi DAO để lưu vào DB
                 }
 
-                // Thông báo thành công
-                JOptionPane.showMessageDialog(this, "Đã thêm " + questions.size() + " câu hỏi từ file Excel.");
-
-                // Tải lại danh sách câu hỏi
+                JOptionPane.showMessageDialog(null, "Nhập dữ liệu thành công!", "Thành công", JOptionPane.INFORMATION_MESSAGE);
                 loadQuestions();
-            } catch (IOException e) {
-                JOptionPane.showMessageDialog(this, "Lỗi khi đọc file Excel: " + e.getMessage(), "Lỗi", JOptionPane.ERROR_MESSAGE);
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                JOptionPane.showMessageDialog(null, "Lỗi khi nhập dữ liệu!", "Lỗi", JOptionPane.ERROR_MESSAGE);
             }
         }
-    }
-
-    public List<QuestionEntity> readQuestionsFromExcel(String filePath) throws IOException {
-        List<QuestionEntity> questions = new ArrayList<>();
-
-        // Mở file Excel
-        try (FileInputStream file = new FileInputStream(new File(filePath));
-             Workbook workbook = new XSSFWorkbook(file)) {
-
-            // Lấy sheet đầu tiên
-            Sheet sheet = workbook.getSheetAt(0);
-
-            // Duyệt qua các dòng (bỏ qua dòng tiêu đề)
-            for (int i = 1; i <= sheet.getLastRowNum(); i++) {
-                Row row = sheet.getRow(i);
-
-                // Đọc dữ liệu từ các cột
-                String content = row.getCell(0).getStringCellValue();
-                String topic = row.getCell(1).getStringCellValue();
-                String level = row.getCell(2).getStringCellValue();
-                String picturePath = row.getCell(3).getStringCellValue();
-
-                // Tạo đối tượng QuestionEntity
-                QuestionEntity question = new QuestionEntity();
-                question.setqContent(content);
-                question.setqTopicID(topicBUS.findTopicByTitle(topic).getTpID()); // Chuyển đổi tên topic thành ID
-                question.setqLevel(level);
-                question.setqPictures(picturePath);
-                question.setqStatus(1); // Mặc định status là 1
-
-                // Thêm vào danh sách
-                questions.add(question);
-            }
-        }
-
-        return questions;
     }
 
     private void updateQuestion() {
