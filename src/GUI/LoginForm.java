@@ -1,6 +1,6 @@
 package GUI;
 import BUS.UserBUS;
-import Entity.UserEntity;
+
 
 import java.awt.Color;
 import javax.swing.*;
