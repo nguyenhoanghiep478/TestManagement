@@ -207,6 +207,8 @@ public class TopicForm extends JFrame {
             if (selectedRow != -1) {
                 txtTopicTittle.setText(model.getValueAt(selectedRow, 1).toString());
                 String parentName = model.getValueAt(selectedRow, 2).toString();
+                loadTopicParents();
+                    cbTopicParent.removeItem(txtTopicTittle.getText());
                 cbTopicParent.setSelectedItem(parentName.equals("Không có") ? "Không có chủ đề cha" : parentName);
             }
         });
