@@ -59,4 +59,9 @@ public class ExamDAO extends AbstractDAO<ExamEntity> implements IExamDAO {
                 exam.getEx_quesId()
         );
     }
+
+    @Override
+    public List<ExamEntity> getAll() {
+        return searchBy(null, rowMapper, "exams");
+    }
 }

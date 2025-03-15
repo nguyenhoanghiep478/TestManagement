@@ -23,7 +23,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 
-public class QuestionForm extends JFrame {
+public class    QuestionForm extends JFrame {
     private JTextField txtContent;
     private JLabel lblPicture;
     private JComboBox<String> cbTopic, cbLevel;

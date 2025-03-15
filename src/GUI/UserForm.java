@@ -241,7 +241,7 @@ public class UserForm extends JFrame {
             }
         });
     }
-//    public static void main(String[] args) {
-//        SwingUtilities.invokeLater(() -> new UserForm().setVisible(true));
-//    }
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> new UserForm().setVisible(true));
+    }
 }

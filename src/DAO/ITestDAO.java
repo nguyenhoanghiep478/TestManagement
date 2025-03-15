@@ -18,4 +18,6 @@ public interface ITestDAO {
     void deleteExamByTestCode(String testCode);
     void logAction(String content,int userId,String testCode);
     void saveResult(int userID,String testCode,String resultAnswer,double mark);
+
+    List<TestEntity> findAll();
 }

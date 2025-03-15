@@ -35,9 +35,11 @@ public class TestForm {
     private ITestService testService;
     private String testCode;
     private int userId;
+    private String exCode;
 
-    public TestForm(String testCode,int userId) {
+    public TestForm(String testCode,int userId,String exCode) {
         this.testCode = testCode;
+        this.exCode = exCode;
         this.testService = new TestService(new TestDAO(new TestMapper()));
         this.userId = userId;
         loadTestData();
@@ -195,7 +197,7 @@ public class TestForm {
                     .mapToObj(String::valueOf)
                     .collect(Collectors.joining(",")) + "]";
 
-            this.testService.saveResult(answersJson,this.userId,this.testCode,score);
+            this.testService.saveResult(answersJson,this.userId,this.exCode,score);
             showResultPage();
         }
     }

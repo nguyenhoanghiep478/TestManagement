@@ -144,6 +144,12 @@ public class TestDAO extends AbstractDAO<TestEntity> implements ITestDAO {
         }
     }
 
+    @Override
+    public List<TestEntity> findAll() {
+        String sql = "SELECT testId,ts.testCode,testTitle,testTime,tpId,num_easy,num_medium,num_diff,testLimit,testDate,testStatus FROM tracnghiem.test left join test_structure as ts on test.testCode = ts.testCode";
+        return query(sql,rowMapper);
+    }
+
     public void insertDefaultExamData() {
         String checkQuery = "SELECT COUNT(*) FROM exams";
         String insertQuery = "INSERT INTO exams (testCode, exOrder, exCode, ex_quesIDs) VALUES (?, ?, ?, ?)";
