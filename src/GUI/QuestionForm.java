@@ -43,6 +43,7 @@ public class QuestionForm extends JPanel{
     private JTextField search;
     private final ITopicBUS topicBUS = new TopicBUS();
     private final IQuestionBUS questionBUS=new QuestionBUS();
+    private final QuestionDAO questionDAO = new QuestionDAO();
     public QuestionForm() {
     	setBackground(new Color(255, 255, 255));
 
@@ -54,7 +55,7 @@ public class QuestionForm extends JPanel{
         scrollPane.setBounds(10, 76, 1130, 268);
         add(scrollPane);
 
-        model = new DefaultTableModel(new String[]{"Id", "Content", "Topic", "Level"}, 0);
+        model = new DefaultTableModel(new String[]{"Id", "Content", "Topic", "Level", "Số câu trả lời"}, 0);
         table = new JTable(model);
         table.setFont(new Font("Times New Roman", Font.PLAIN, 18));
         table.setBackground(new Color(255, 255, 255));
@@ -220,42 +221,16 @@ public class QuestionForm extends JPanel{
     }
     private void addQuestion() {
         JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setFileFilter(new FileNameExtensionFilter("Excel Files", "xlsx", "xls"));
         int returnVal = fileChooser.showOpenDialog(null);
+
         if (returnVal == JFileChooser.APPROVE_OPTION) {
             String filePath = fileChooser.getSelectedFile().getAbsolutePath();
-            try (FileInputStream fis = new FileInputStream(new File(filePath));
-                 Workbook workbook = new XSSFWorkbook(fis)) {
-
-                Sheet sheet = workbook.getSheetAt(0);
-                Iterator<Row> rowIterator = sheet.iterator();
-                rowIterator.next(); // Bỏ qua hàng tiêu đề
-
-                QuestionDAO questionDAO = new QuestionDAO(); // Dùng DAO để thao tác với database
-
-                while (rowIterator.hasNext()) {
-                    Row row = rowIterator.next();
-                    QuestionEntity question = new QuestionEntity();
-
-                    question.setqContent(row.getCell(1).getStringCellValue());
-                    question.setqPictures(row.getCell(2).getStringCellValue());
-                    question.setqTopicID((int) row.getCell(3).getNumericCellValue());
-
-                    // Lấy level dưới dạng String
-                    question.setqLevel(row.getCell(4).getStringCellValue());
-
-                    question.setqStatus((int) row.getCell(5).getNumericCellValue());
-
-                    questionDAO.insert(question); // Gọi DAO để lưu vào DB
-                }
-
-                JOptionPane.showMessageDialog(null, "Nhập dữ liệu thành công!", "Thành công", JOptionPane.INFORMATION_MESSAGE);
-                loadQuestions(questionBUS.getAllQuestion());
-            } catch (Exception ex) {
-                ex.printStackTrace();
-                JOptionPane.showMessageDialog(null, "Lỗi khi nhập dữ liệu!", "Lỗi", JOptionPane.ERROR_MESSAGE);
-            }
+            questionDAO.addQuestionFromExcel(filePath);
+            loadQuestions(questionBUS.getAllQuestion());
         }
     }
+
 
     private void updateQuestion() {
         try {
@@ -300,7 +275,7 @@ public class QuestionForm extends JPanel{
         QuestionEntity question=questionBUS.findQuestionById(id);
         new AnswerForm(question);
     }
-        private void deleteQuestion(){
+    private void deleteQuestion() {
         try {
             int selectedRow = table.getSelectedRow();
             if (selectedRow == -1) {
@@ -309,12 +284,25 @@ public class QuestionForm extends JPanel{
             }
 
             int id = (int) table.getValueAt(selectedRow, 0);
-            questionBUS.deleteQuestion(id);
-            loadQuestions(questionBUS.getAllQuestion());
+
+            // Hiển thị hộp thoại xác nhận
+            int confirm = JOptionPane.showConfirmDialog(this, "Bạn có chắc chắn muốn xóa câu hỏi này?", "Xác nhận xóa", JOptionPane.YES_NO_OPTION);
+            if (confirm != JOptionPane.YES_OPTION) {
+                return;
+            }
+
+            // Xóa câu hỏi trong database
+            if (questionBUS.deleteQuestion(id)) { // Giả sử hàm deleteQuestion trả về true nếu xóa thành công
+                JOptionPane.showMessageDialog(this, "Xóa thành công!");
+                loadQuestions(questionBUS.getAllQuestion()); // Cập nhật lại danh sách sau khi xóa
+            } else {
+                JOptionPane.showMessageDialog(this, "Xóa thất bại, vui lòng thử lại!");
+            }
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this, "Lỗi khi xóa câu hỏi: " + e.getMessage());
         }
     }
+
     private void loadTopics() {
         cbTopic.removeAllItems(); // Xóa dữ liệu cũ trước khi tải mới
         for (TopicEntity topic : topicBUS.getAllTopic()) {
@@ -328,12 +316,20 @@ public class QuestionForm extends JPanel{
         cbLevel.setSelectedIndex(0);
         imagePath = "";
     }
-    public void loadQuestions(List<QuestionEntity>list) {
+    public void loadQuestions(List<QuestionEntity> list) {
         model.setRowCount(0);
         for (QuestionEntity q : list) {
-            model.addRow(new Object[]{q.getqID(), q.getqContent(),topicBUS.findTopicById(q.getqTopicID()).getTpTitle(), q.getqLevel()});
+            int answerCount = questionDAO.countAnswers(q.getqID()); // Lấy số lượng câu trả lời
+            model.addRow(new Object[]{
+                    q.getqID(),
+                    q.getqContent(),
+                    topicBUS.findTopicById(q.getqTopicID()).getTpTitle(),
+                    q.getqLevel(),
+                    answerCount // Hiển thị số câu trả lời
+            });
         }
     }
+
     private void addTableSelectionListener() {
         table.getSelectionModel().addListSelectionListener(event -> {
             int selectedRow = table.getSelectedRow();
