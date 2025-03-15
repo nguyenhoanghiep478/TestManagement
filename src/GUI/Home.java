@@ -230,12 +230,12 @@ public class Home extends JFrame {
 		JButton btnStatic = new JButton("THỐNG KÊ");
 		btnStatic.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				ExamCandidatesPanel userForm = new ExamCandidatesPanel("123");
-				userForm.setVisible(true);
-				main_Content.removeAll();
-				main_Content.add(userForm);
-				main_Content.revalidate(); // Cập nhật layout
-				main_Content.repaint(); // Vẽ lại giao diện
+//				ExamCandidatesPanel userForm = new ExamCandidatesPanel("123");
+//				userForm.setVisible(true);
+//				main_Content.removeAll();
+//				main_Content.add(userForm);
+//				main_Content.revalidate(); // Cập nhật layout
+//				main_Content.repaint(); // Vẽ lại giao diện
 			}
 		});
 		btnStatic.setHorizontalAlignment(SwingConstants.LEFT);
