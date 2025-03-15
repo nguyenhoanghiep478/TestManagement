@@ -5,7 +5,7 @@ import Entity.UserEntity;
 
 import java.util.List;
 
-public interface IQuestionBUS {
+public interface IQuestionBUS{
     QuestionEntity findQuestionById(int questID);
     List<QuestionEntity> getAllQuestion();
     long createQuestion(QuestionEntity question);

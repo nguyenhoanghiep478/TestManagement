@@ -13,7 +13,7 @@ import Entity.TopicEntity;
 import java.awt.*;
 import java.util.List;
 
-public class TopicForm extends JFrame {
+public class TopicForm extends JPanel {
    
     private JComboBox<String> cbTopicParent;
     private JTable table;
@@ -24,16 +24,14 @@ public class TopicForm extends JFrame {
     private final ITopicBUS topicBUS = new TopicBUS();
 
     public TopicForm() {
-    	getContentPane().setBackground(new Color(255, 255, 255));
-        setTitle("Quản lý Chủ Đề");
-        setSize(850, 614);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLocationRelativeTo(null);
-        getContentPane().setLayout(null);
+    	setBackground(new Color(255, 255, 255));
+
+        setSize(1150, 631);
+        setLayout(null);
 
         JScrollPane scrollPane = new JScrollPane();
-        scrollPane.setBounds(10, 50, 810, 250);
-        getContentPane().add(scrollPane);
+        scrollPane.setBounds(20, 10, 1120, 386);
+        add(scrollPane);
 
         model = new DefaultTableModel(new String[]{"ID", "Title",  "Parent"}, 0);
         table = new JTable(model);
@@ -49,8 +47,8 @@ public class TopicForm extends JFrame {
         JPanel panelForm = new JPanel();
         panelForm.setBackground(new Color(255, 255, 255));
         panelForm.setLayout(null);
-        panelForm.setBounds(10, 320, 810, 237);
-        getContentPane().add(panelForm);
+        panelForm.setBounds(20, 416, 1120, 189);
+        add(panelForm);
 
         JLabel lblTopicName = new JLabel("Title:");
         lblTopicName.setFont(new Font("Times New Roman", Font.PLAIN, 18));
@@ -58,19 +56,19 @@ public class TopicForm extends JFrame {
         panelForm.add(lblTopicName);
         JLabel lblTopicParent = new JLabel("Topic parent");
         lblTopicParent.setFont(new Font("Times New Roman", Font.PLAIN, 18));
-        lblTopicParent.setBounds(395, 20, 100, 25);
+        lblTopicParent.setBounds(562, 20, 100, 25);
         panelForm.add(lblTopicParent);
 
         cbTopicParent = new JComboBox<>();
         cbTopicParent.setBackground(new Color(255, 255, 255));
         cbTopicParent.setFont(new Font("Times New Roman", Font.PLAIN, 16));
-        cbTopicParent.setBounds(505, 10, 155, 46);
+        cbTopicParent.setBounds(690, 10, 193, 46);
         panelForm.add(cbTopicParent);
         loadTopicParents(); // Load dữ liệu cho combobox
 
         btnAdd = new JButton("Thêm");
         btnAdd.setBackground(new Color(255, 255, 255));
-        btnAdd.setBounds(680, 9, 120, 46);
+        btnAdd.setBounds(1000, 9, 120, 46);
         panelForm.add(btnAdd);
         btnAdd.setHorizontalAlignment(SwingConstants.LEFT);
         btnAdd.setIcon(new ImageIcon(getClass().getClassLoader().getResource("ICON/add.png")));
@@ -78,7 +76,7 @@ public class TopicForm extends JFrame {
 
         btnUpdate = new JButton("Sửa");
         btnUpdate.setBackground(new Color(255, 255, 255));
-        btnUpdate.setBounds(680, 76, 120, 46);
+        btnUpdate.setBounds(1000, 65, 120, 46);
         btnUpdate.setHorizontalAlignment(SwingConstants.LEFT);
         btnUpdate.setIcon(new ImageIcon(getClass().getClassLoader().getResource("ICON/edit.png")));
         panelForm.add(btnUpdate);
@@ -86,7 +84,7 @@ public class TopicForm extends JFrame {
 
         btnDelete = new JButton("Xóa");
         btnDelete.setBackground(new Color(255, 255, 255));
-        btnDelete.setBounds(680, 152, 120, 46);
+        btnDelete.setBounds(1000, 121, 120, 46);
         btnDelete.setHorizontalAlignment(SwingConstants.LEFT);
         btnDelete.setIcon(new ImageIcon(getClass().getClassLoader().getResource("ICON/delete.png")));
         panelForm.add(btnDelete);
@@ -94,14 +92,9 @@ public class TopicForm extends JFrame {
         
         txtTopicTittle = new JTextField();
         txtTopicTittle.setFont(new Font("Times New Roman", Font.PLAIN, 18));
-        txtTopicTittle.setBounds(72, 9, 289, 46);
+        txtTopicTittle.setBounds(72, 9, 307, 46);
         panelForm.add(txtTopicTittle);
         txtTopicTittle.setColumns(10);
-
-        JLabel lblTitle = new JLabel("Quản lí Chủ Đề");
-        lblTitle.setFont(new Font("Times New Roman", Font.BOLD, 26));
-        lblTitle.setBounds(300, 10, 250, 30);
-        getContentPane().add(lblTitle);
 
         btnAdd.addActionListener(e -> addTopic());
         btnUpdate.addActionListener(e -> updateTopic());

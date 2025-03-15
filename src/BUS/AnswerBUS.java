@@ -6,7 +6,7 @@ import Entity.AnswerEntity;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AnswerBUS implements IAnswerBUS {
+public class AnswerBUS implements IAnswerBUS{
     private AnswerDAO answerDAO=new AnswerDAO();
 
 

@@ -116,6 +116,7 @@ public class AnswerForm extends JFrame {
         lblThmCuHi.setBounds(233, 10, 344, 56);
         getContentPane().add(lblThmCuHi);
         addTableSelectionListener();
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setVisible(true);
     }
 
