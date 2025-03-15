@@ -63,5 +63,28 @@ public class TestService implements ITestService {
         testDAO.saveResult(userId, testCode, answers, score);
     }
 
+    @Override
+    public boolean isExistTest(String testCode,int topicId) {
+        return testDAO.isExistTest(testCode,topicId);
+    }
+
+    @Override
+    public void createTest(TestEntity test) {
+        testDAO.createTestStructure(test);
+        if(!testDAO.isExistTestCode(test.getTestCode())){
+            testDAO.createTest(test);
+        }
+    }
+
+    @Override
+    public void updateTest(TestEntity test) {
+        if(testDAO.isAlreadyUsingTest(test.getTestCode())){
+            return;
+        }
+
+        testDAO.updateTest(test);
+        testDAO.updateTestStructure(test);
+    }
+
 
 }

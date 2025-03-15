@@ -20,4 +20,18 @@ public interface ITestDAO {
     void saveResult(int userID,String testCode,String resultAnswer,double mark);
 
     List<TestEntity> findAll();
+
+    boolean isExistTest(String testCode, int topicId);
+
+    void createTestStructure(TestEntity test);
+
+    void createTest(TestEntity test);
+
+    boolean isExistTestCode(String testCode);
+
+    boolean isAlreadyUsingTest(String testCode);
+
+    void updateTest(TestEntity test);
+
+    void updateTestStructure(TestEntity test);
 }

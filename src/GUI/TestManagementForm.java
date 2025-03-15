@@ -17,6 +17,7 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.Font;
 import java.awt.Color;
+import java.sql.Date;
 import java.util.List;
 
 public class TestManagementForm extends JFrame {
@@ -187,38 +188,53 @@ public class TestManagementForm extends JFrame {
     private void addUser() {
 //        if (!validateInput()) return;
 //
-//        try {
-//            if(userBUS.isUserExist(UserName.getText())){
-//                JOptionPane.showMessageDialog(this, "Tên người dùng đã tồn tại");
-//                return;
-//            }
-//            UserEntity user = new UserEntity(0,UserName.getText(), txtEmail.getText(),"12345678", txtFullName.getText(), cbIsAdmin.getSelectedIndex());
-//            userBUS.createUser(user);
-//            loadTableData();
-//            clearFields();
-//            JOptionPane.showMessageDialog(this, "Thêm thành công!");
-//        } catch (Exception e) {
-//            JOptionPane.showMessageDialog(this, "Lỗi : " + e.getMessage());
-//        }
+        try {
+            int tpId = topics.stream().filter(topic -> topic.getTpTitle().equals(cbIsAdmin.getSelectedItem())).findFirst().get().getTpID();
+            if(!testService.isExistTest(UserName.getText(),tpId)){
+                JOptionPane.showMessageDialog(this, "Tên người dùng đã tồn tại");
+                return;
+            }
+            TestEntity test = new TestEntity(0,UserName.getText(),txtEmail.getText(),
+                    Integer.parseInt(txtFullName.getText()),
+                    tpId,Integer.parseInt(easyField.getText()),
+                    Integer.parseInt(medField.getText()),
+                    Integer.parseInt(diffField.getText()),
+                    Integer.parseInt(limitField.getText()),
+                    new Date(System.currentTimeMillis()),1);
+            testService.createTest(test);
+            loadTableData();
+            clearFields();
+            JOptionPane.showMessageDialog(this, "Thêm thành công!");
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Lỗi : " + e.getMessage());
+        }
     }
 
     private void updateUser() {
-//        int selectedRow = table.getSelectedRow();
-//        if (selectedRow == -1) {
-//            JOptionPane.showMessageDialog(this, "Vui lòng chọn người dùng cần sửa.");
-//            return;
-//        }
-//        if (!validateInput()) return;
-//        try {
-//            int userId = (int) model.getValueAt(selectedRow, 0);
-//            UserEntity user = new UserEntity(userId, UserName.getText(), txtEmail.getText(),"12345678", txtFullName.getText(),  cbIsAdmin.getSelectedIndex());
-//            userBUS.updateUser(user);
-//            loadTableData();
-//            clearFields();
-//            JOptionPane.showMessageDialog(this, "Cập nhật thành công!");
-//        } catch (Exception e) {
-//            JOptionPane.showMessageDialog(this, "Lỗi hệ thống: " + e.getMessage());
-//        }
+        int selectedRow = table.getSelectedRow();
+        if (selectedRow == -1) {
+            JOptionPane.showMessageDialog(this, "Vui lòng chọn người dùng cần sửa.");
+            return;
+        }
+        if (!validateInput()) return;
+        try {
+            int testId = (int) model.getValueAt(selectedRow, 0);
+            int tpId = topics.stream().filter(topic -> topic.getTpTitle().equals(cbIsAdmin.getSelectedItem())).findFirst().get().getTpID();
+            TestEntity test = new TestEntity(testId,UserName.getText(),txtEmail.getText(),
+                    Integer.parseInt(txtFullName.getText()),
+                    tpId,Integer.parseInt(easyField.getText()),
+                    Integer.parseInt(medField.getText()),
+                    Integer.parseInt(diffField.getText()),
+                    Integer.parseInt(limitField.getText()),
+                    new Date(System.currentTimeMillis()),1);
+
+            testService.updateTest(test);
+            loadTableData();
+            clearFields();
+            JOptionPane.showMessageDialog(this, "Cập nhật thành công!");
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Lỗi hệ thống: " + e.getMessage());
+        }
     }
 
     private void deleteUser() {
@@ -295,6 +311,10 @@ public class TestManagementForm extends JFrame {
                 txtEmail.setText(model.getValueAt(selectedRow, 2).toString());
                 txtFullName.setText(model.getValueAt(selectedRow, 4).toString());
                 cbIsAdmin.setSelectedItem(model.getValueAt(selectedRow, 3).toString());
+                limitField.setText(model.getValueAt(selectedRow, 5).toString());
+                easyField.setText(model.getValueAt(selectedRow, 7).toString());
+                medField.setText(model.getValueAt(selectedRow, 8).toString());
+                diffField.setText(model.getValueAt(selectedRow, 9).toString());
 
             }
         });

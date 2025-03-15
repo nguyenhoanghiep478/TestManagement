@@ -15,4 +15,10 @@ public interface ITestService {
     void deleteExams(String testCode);
     void logAction(String content,int userId,String testCode);
     void saveResult(String answers,int userId,String testCode,double score);
+
+    boolean isExistTest(String testCode,int topicId);
+
+    void createTest(TestEntity test);
+
+    void updateTest(TestEntity test);
 }
