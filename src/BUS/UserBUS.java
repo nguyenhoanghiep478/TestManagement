@@ -44,4 +44,9 @@ public class UserBUS implements IUserBUS{
         if(userEntity==null) return false;
         return userEntity.getUserPassword().equals(password);
     }
+
+    @Override
+    public UserEntity findUserByName(String name) {
+        return userDAO.findByName(name);
+    }
 }

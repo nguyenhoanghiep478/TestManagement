@@ -12,4 +12,5 @@ public interface IUserBUS {
     boolean deleteUser(int userId);
     boolean isUserExist(String name);
     boolean login(String userName,String password);
+    UserEntity findUserByName(String name);
 }
