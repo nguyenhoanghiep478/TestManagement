@@ -9,4 +9,6 @@ public interface IAnswerBUS {
     AnswerEntity findAnswerById(int answerId);
     List<AnswerEntity> getAllAnswer();
     boolean createAnswer(AnswerEntity answer);
+    boolean updateAnswer(AnswerEntity answer);
+    boolean removeAnswer(int  answerId);
 }

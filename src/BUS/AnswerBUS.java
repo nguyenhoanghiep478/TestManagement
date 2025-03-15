@@ -6,7 +6,7 @@ import Entity.AnswerEntity;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AnswerBUS implements IAnswerBUS {
+public class AnswerBUS implements IAnswerBUS{
     private AnswerDAO answerDAO=new AnswerDAO();
 
 
@@ -17,12 +17,26 @@ public class AnswerBUS implements IAnswerBUS {
 
     @Override
     public List<AnswerEntity> getAllAnswer() {
-        return new ArrayList<>();
+        return answerDAO.findAll();
     }
 
     @Override
     public boolean createAnswer(AnswerEntity answer) {
          answerDAO.insert(answer);
-         return false;
+         return true;
     }
+
+    @Override
+    public boolean updateAnswer(AnswerEntity answer) {
+        answerDAO.update(answer);
+        return true;
+    }
+
+    @Override
+    public boolean removeAnswer(int id) {
+         answerDAO.delete(id);
+         return true;
+    }
+
+
 }
