@@ -12,7 +12,7 @@ public class TestMapper implements RowMapper<TestEntity> {
         TestEntity test = new TestEntity();
         test.setTestId(rs.getInt("testID"));
         test.setTestCode(rs.getString("testCode"));
-        test.setTestTitle(rs.getString("testTilte"));
+        test.setTestTitle(rs.getString("testTitle"));
         test.setTestTime(rs.getInt("testTime"));
         test.setTopicId(rs.getInt("tpID"));
         test.setNumEasy(rs.getInt("num_easy"));

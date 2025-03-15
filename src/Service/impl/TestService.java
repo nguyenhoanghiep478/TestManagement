@@ -17,8 +17,11 @@ public class TestService implements ITestService {
 
     @Override
     public List<TestEntity> findAll() {
-        return List.of();
+        return testDAO.findAll();
     }
+
+
+
 
     @Override
     public int getTestTime(String testCode) {
@@ -58,6 +61,29 @@ public class TestService implements ITestService {
     @Override
     public void saveResult(String answers, int userId, String testCode, double score) {
         testDAO.saveResult(userId, testCode, answers, score);
+    }
+
+    @Override
+    public boolean isExistTest(String testCode,int topicId) {
+        return testDAO.isExistTest(testCode,topicId);
+    }
+
+    @Override
+    public void createTest(TestEntity test) {
+        testDAO.createTestStructure(test);
+        if(!testDAO.isExistTestCode(test.getTestCode())){
+            testDAO.createTest(test);
+        }
+    }
+
+    @Override
+    public void updateTest(TestEntity test) {
+        if(testDAO.isAlreadyUsingTest(test.getTestCode())){
+            return;
+        }
+
+        testDAO.updateTest(test);
+        testDAO.updateTestStructure(test);
     }
 
 

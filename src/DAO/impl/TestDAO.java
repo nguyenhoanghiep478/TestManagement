@@ -144,6 +144,54 @@ public class TestDAO extends AbstractDAO<TestEntity> implements ITestDAO {
         }
     }
 
+    @Override
+    public List<TestEntity> findAll() {
+        String sql = "SELECT testId,ts.testCode,testTitle,testTime,tpId,num_easy,num_medium,num_diff,testLimit,testDate,testStatus FROM tracnghiem.test left join test_structure as ts on test.testCode = ts.testCode";
+        return query(sql,rowMapper);
+    }
+
+    @Override
+    public boolean isExistTest(String testCode, int topicId) {
+        String sql = "SELECT * FROM test_structure WHERE testCode = ? and tpID = ?";
+        return query(sql,rowMapper,testCode,topicId)!=null;
+    }
+
+    @Override
+    public void createTestStructure(TestEntity test) {
+        String sql = "Insert into test_structure (testCode,tpID,num_easy,num_medium,num_diff) values (?,?,?,?,?)";
+        save(sql,test.getTestCode(),test.getTopicId(),test.getNumEasy(),test.getNumMedium(),test.getNumDiff());
+    }
+
+    @Override
+    public void createTest(TestEntity test) {
+        String sql = "INSERT INTO test (testCode,testTitle,testTime,testLimit,testDate,testStatus) values (?,?,?,?,?,?)";
+        save(sql,test.getTestCode(),test.getTestTitle(),test.getTestTime(),test.getTestLimit(),test.getTestDate(),test.getTestStatus());
+    }
+
+    @Override
+    public boolean isExistTestCode(String testCode) {
+        String sql = "SELECT * FROM test WHERE testCode = ? ";
+        return query(sql,rowMapper,testCode)!=null;
+    }
+
+    @Override
+    public boolean isAlreadyUsingTest(String testCode) {
+        String sql = "SELECT * FROM test as t where t.testCode not in (select testCode from exams) and testCode = ? ";
+        return query(sql,rowMapper,testCode)==null;
+    }
+
+    @Override
+    public void updateTest(TestEntity test) {
+        String sql = "Update test set testTitle = ?,testTime = ?,testLimit = ? where testID = ? ";
+        update(sql,test.getTestTitle(),test.getTestTime(),test.getTestLimit(),test.getTestId());
+    }
+
+    @Override
+    public void updateTestStructure(TestEntity test) {
+        String sql = "Update test set num_easy = ?, num_medium = ?, num_diff = ? where testCode = ? and tpID= ?";
+        update(sql,test.getNumEasy(),test.getNumMedium(),test.getNumDiff(),test.getTestCode(),test.getTopicId());
+    }
+
     public void insertDefaultExamData() {
         String checkQuery = "SELECT COUNT(*) FROM exams";
         String insertQuery = "INSERT INTO exams (testCode, exOrder, exCode, ex_quesIDs) VALUES (?, ?, ?, ?)";

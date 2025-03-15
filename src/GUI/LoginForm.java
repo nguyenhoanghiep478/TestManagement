@@ -1,5 +1,6 @@
 package GUI;
 import BUS.UserBUS;
+import Entity.UserEntity;
 
 
 import java.awt.Color;
@@ -62,8 +63,11 @@ public class LoginForm extends JFrame{
 							JOptionPane.showMessageDialog(null, "Tên đăng nhập hoặc mật khẩu không đúng!");
 							return ;
 						}
+
+						UserEntity user=userBUS.findUserByName(usernameField.getText());
 						JOptionPane.showMessageDialog(null, "Đăng nhập thành công ");
-						dispose();
+						new Home(user);
+						setVisible(false);
 					} catch (Exception ex) {
 						JOptionPane.showMessageDialog(null, "Lỗi : " + ex.getMessage());
 					}

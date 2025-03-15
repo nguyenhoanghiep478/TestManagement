@@ -13,7 +13,7 @@ public class ExamMapper implements RowMapper<ExamEntity> {
         exam.setTestCode(rs.getString("testCode"));
         exam.setExOrder(rs.getString("exOrder"));
         exam.setExCode(rs.getString("exCode"));
-        exam.setEx_quesId(rs.getString("ex_quesId"));
+        exam.setEx_quesId(rs.getString("ex_quesIDs"));
         return exam;
     }
 }

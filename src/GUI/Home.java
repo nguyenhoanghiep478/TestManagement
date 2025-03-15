@@ -1,14 +1,12 @@
 package GUI;
 
+import Entity.UserEntity;
+import org.apache.commons.io.input.ReaderInputStream;
+
 import java.awt.EventQueue;
 
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.SwingConstants;
+import javax.swing.*;
 import javax.swing.border.EmptyBorder;
-import javax.swing.BorderFactory;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
 import java.awt.Font;
 import java.awt.Insets;
 import java.awt.Color;
@@ -16,33 +14,22 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.ActionEvent;
-import javax.swing.JLabel;
 
 public class Home extends JFrame {
 
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
+	private UserEntity userEntity;
 
 	/**
 	 * Launch the application.
 	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					Home frame = new Home();
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
+
 
 	/**
 	 * Create the frame.
 	 */
-	public Home(){
+	public Home(UserEntity userEntity){
 		Color sidebarColor = new Color(34, 177, 76); // Xanh lá cây đậm
         Color hoverColor = new Color(50, 205, 85);   // Xanh sáng hơn khi hover
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -63,10 +50,21 @@ public class Home extends JFrame {
 		sideBar.setBounds(0, 0, 215, 668);
 		contentPane.add(sideBar);
 		sideBar.setLayout(null);
-		
+		setVisible(true);
 		JButton btnExam = new JButton("ĐỀ THI");
 		btnExam.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				if(userEntity.getIsAdmin()==0){
+					JOptionPane.showMessageDialog(null, "bạn không có quyền này");
+					return;
+				}
+				ExamForm userForm = new ExamForm();
+				userForm.setVisible(true);
+				main_Content.removeAll();
+				main_Content.add(userForm);
+				main_Content.revalidate(); // Cập nhật layout
+				main_Content.repaint(); // Vẽ lại giao diện
+
 			}
 		});
 		btnExam.setHorizontalAlignment(SwingConstants.LEFT);
@@ -96,6 +94,10 @@ public class Home extends JFrame {
 		JButton btnUser = new JButton("NGƯỜI DÙNG");
 		btnUser.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e){
+				if(userEntity.getIsAdmin()==0){
+					JOptionPane.showMessageDialog(null, "bạn không có quyền này");
+					return;
+				}
 				UserForm userForm = new UserForm();
 				userForm.setVisible(true);
 				main_Content.removeAll();
@@ -131,6 +133,10 @@ public class Home extends JFrame {
 		JButton btnTopic = new JButton("CHỦ ĐỀ");
 		btnTopic.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				if(userEntity.getIsAdmin()==0){
+					JOptionPane.showMessageDialog(null, "bạn không có quyền này");
+					return;
+				}
 				TopicForm userForm = new TopicForm();
 				userForm.setVisible(true);
 				main_Content.removeAll();
@@ -165,6 +171,10 @@ public class Home extends JFrame {
 		JButton btnQuestion = new JButton("CÂU HỎI");
 		btnQuestion.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				if(userEntity.getIsAdmin()==0){
+					JOptionPane.showMessageDialog(null, "bạn không có quyền này");
+					return;
+				}
 				QuestionForm userForm = new QuestionForm();
 				userForm.setVisible(true);
 				main_Content.removeAll();
@@ -230,12 +240,16 @@ public class Home extends JFrame {
 		JButton btnStatic = new JButton("THỐNG KÊ");
 		btnStatic.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-//				ExamCandidatesPanel userForm = new ExamCandidatesPanel("123");
-//				userForm.setVisible(true);
-//				main_Content.removeAll();
-//				main_Content.add(userForm);
-//				main_Content.revalidate(); // Cập nhật layout
-//				main_Content.repaint(); // Vẽ lại giao diện
+				if(userEntity.getIsAdmin()==0){
+					JOptionPane.showMessageDialog(null, "bạn không có quyền này");
+					return;
+				}
+				ExamCandidatesForm userForm = new ExamCandidatesForm("test_001");
+				userForm.setVisible(true);
+				main_Content.removeAll();
+				main_Content.add(userForm);
+				main_Content.revalidate(); // Cập nhật layout
+				main_Content.repaint(); // Vẽ lại giao diện
 			}
 		});
 		btnStatic.setHorizontalAlignment(SwingConstants.LEFT);
@@ -283,7 +297,12 @@ public class Home extends JFrame {
 				btnLogout.setBackground(sidebarColor);
 			}
 		});
-
+		btnLogout.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				new LoginForm();
+				setVisible(false);
+			}
+		});
 		sideBar.add(btnLogout);
 		
 		JLabel lblNewLabel = new JLabel("UserName");
@@ -296,6 +315,11 @@ public class Home extends JFrame {
 		btnTest.setHorizontalAlignment(SwingConstants.LEFT);
 		btnTest.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				if(userEntity.getIsAdmin()==1){
+					JOptionPane.showMessageDialog(null, "bạn không có quyền này");
+					return;
+				}
+				new TestForm("test_001",1,"test_001A");
 			}
 		});
 		btnTest.setFont(new Font("Times New Roman", Font.PLAIN, 16));
@@ -326,7 +350,8 @@ public class Home extends JFrame {
 		lblHello.setFont(new Font("Times New Roman", Font.PLAIN, 18));
 		lblHello.setBounds(82, 50, 106, 28);
 		sideBar.add(lblHello);
-		
+		setVisible(true);
 
 	}
+
 }
