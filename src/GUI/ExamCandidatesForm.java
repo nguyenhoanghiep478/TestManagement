@@ -9,6 +9,8 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.Font;
 import java.awt.Color;
+import java.sql.*;
+import java.util.Vector;
 
 public class ExamCandidatesForm extends JFrame {
 
@@ -55,62 +57,62 @@ public class ExamCandidatesForm extends JFrame {
 	        getContentPane().add(panelTop, BorderLayout.NORTH);
 	        getContentPane().add(scrollPane, BorderLayout.CENTER);
 
-//	        loadExamData(testCode);
+	        loadExamData(testCode);
 	    }
-//	    private void loadExamData(String testCode) {
-//	        String url = "jdbc:mysql://localhost:3306/tracnghiem";
-//	        String user = "root";
-//	        String password = "";
-//
-//	        try (Connection conn = DriverManager.getConnection(url, user, password)) {
-//	            // Lấy thông tin bài thi
-//	            String queryTest = "SELECT testTilte, testDate FROM test WHERE testCode = ?";
-//	            PreparedStatement stmtTest = conn.prepareStatement(queryTest);
-//	            stmtTest.setString(1, testCode);
-//	            ResultSet rsTest = stmtTest.executeQuery();
-//	            if (rsTest.next()) {
-//	                lblSubject.setText("Môn thi: " + rsTest.getString("testTilte"));
-//	                lblExamDate.setText("Ngày thi: " + rsTest.getDate("testDate"));
-//	            }
-//
-//	            // Lấy danh sách thí sinh
-//	            String queryUsers = "SELECT u.userName, u.userEmail, u.userFullName, r.rs_mark " +
-//	                    "FROM users u JOIN result r ON u.userID = r.userID " +
-//	                    "WHERE r.exCode IN (SELECT exCode FROM exams WHERE testCode = ?)";
-//	            PreparedStatement stmtUsers = conn.prepareStatement(queryUsers);
-//	            stmtUsers.setString(1, testCode);
-//	            ResultSet rsUsers = stmtUsers.executeQuery();
-//
-//	            int totalCandidates = 0;
-//	            int participated = 0;
-//	            int passed = 0;
-//
-//	            model.setRowCount(0);
-//	            while (rsUsers.next()) {
-//	                totalCandidates++;
-//	                if (rsUsers.getInt("rs_mark") >= 0) { // Giả sử điểm >= 0 là có tham gia
-//	                    participated++;
-//	                    if (rsUsers.getInt("rs_mark") >= 50) {
-//	                        passed++;
-//	                    }
-//	                }
-//	                Vector<String> row = new Vector<>();
-//	                row.add(rsUsers.getString("userName"));
-//	                row.add(rsUsers.getString("userEmail"));
-//	                row.add(rsUsers.getString("userFullName"));
-//	                model.addRow(row);
-//	            }
-//
-//	            lblTotalCandidates.setText("Tổng số thí sinh: " + totalCandidates);
-//	            lblParticipated.setText("Số lượng thí sinh dự thi: " + participated);
-//	            lblResultStatus.setText("Kết quả trung bình: " + (participated > 0 && passed * 100 / participated >= 50 ? "Trên 50%" : "Dưới 50%"));
-//
-//	        } catch (SQLException e) {
-//	            e.printStackTrace();
-//	            JOptionPane.showMessageDialog(this, "Lỗi kết nối cơ sở dữ liệu!", "Error", JOptionPane.ERROR_MESSAGE);
-//	        }
-//	    }
+	    private void loadExamData(String testCode) {
+	        String url = "jdbc:mysql://localhost:3306/tracnghiem";
+	        String user = "root";
+	        String password = "123456";
+
+	        try (Connection conn = DriverManager.getConnection(url, user, password)) {
+	            // Lấy thông tin bài thi
+	            String queryTest = "SELECT testTitle, testDate FROM test WHERE testCode = ?";
+	            PreparedStatement stmtTest = conn.prepareStatement(queryTest);
+	            stmtTest.setString(1, testCode);
+	            ResultSet rsTest = stmtTest.executeQuery();
+	            if (rsTest.next()) {
+	                lblSubject.setText("Môn thi: " + rsTest.getString("testTitle"));
+	                lblExamDate.setText("Ngày thi: " + rsTest.getDate("testDate"));
+	            }
+
+	            // Lấy danh sách thí sinh
+	            String queryUsers = "SELECT u.userName, u.userEmail, u.userFullName, r.rs_mark " +
+	                    "FROM users u JOIN result r ON u.userID = r.userID " +
+	                    "WHERE r.exCode IN (SELECT exCode FROM exams WHERE testCode = ?)";
+	            PreparedStatement stmtUsers = conn.prepareStatement(queryUsers);
+	            stmtUsers.setString(1, testCode);
+	            ResultSet rsUsers = stmtUsers.executeQuery();
+
+	            int totalCandidates = 0;
+	            int participated = 0;
+	            int passed = 0;
+
+	            model.setRowCount(0);
+	            while (rsUsers.next()) {
+	                totalCandidates++;
+	                if (rsUsers.getInt("rs_mark") >= 0) { // Giả sử điểm >= 0 là có tham gia
+	                    participated++;
+	                    if (rsUsers.getInt("rs_mark") >= 50) {
+	                        passed++;
+	                    }
+	                }
+	                Vector<String> row = new Vector<>();
+	                row.add(rsUsers.getString("userName"));
+	                row.add(rsUsers.getString("userEmail"));
+	                row.add(rsUsers.getString("userFullName"));
+	                model.addRow(row);
+	            }
+
+	            lblTotalCandidates.setText("Tổng số thí sinh: " + totalCandidates);
+	            lblParticipated.setText("Số lượng thí sinh dự thi: " + participated);
+	            lblResultStatus.setText("Kết quả trung bình: " + (participated > 0 && passed * 100 / participated >= 50 ? "Trên 50%" : "Dưới 50%"));
+
+	        } catch (SQLException e) {
+	            e.printStackTrace();
+	            JOptionPane.showMessageDialog(this, "Lỗi kết nối cơ sở dữ liệu!", "Error", JOptionPane.ERROR_MESSAGE);
+	        }
+        }
 	    public static void main(String[] args) {
-	        SwingUtilities.invokeLater(() -> new ExamCandidatesForm("T001").setVisible(true));
+	        SwingUtilities.invokeLater(() -> new ExamCandidatesForm("test_001").setVisible(true));
 	    }
 }

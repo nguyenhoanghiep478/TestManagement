@@ -17,8 +17,11 @@ public class TestService implements ITestService {
 
     @Override
     public List<TestEntity> findAll() {
-        return List.of();
+        return testDAO.findAll();
     }
+
+
+
 
     @Override
     public int getTestTime(String testCode) {

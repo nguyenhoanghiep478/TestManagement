@@ -100,9 +100,11 @@ public abstract class AbstractDAO<T> implements IGenericDAO<T> {
         StringBuilder query = new StringBuilder("SELECT * FROM " + tableName + " WHERE 1 = 1");
         List<Object> parameters = new ArrayList<>();
 
-        for (Criteria criteria : criteriaList) {
-            query.append(" AND ").append(criteria.getKey()).append(" ").append(criteria.getOperation()).append(" ?");
-            parameters.add(criteria.getValue());
+        if(criteriaList != null){
+            for (Criteria criteria : criteriaList) {
+                query.append(" AND ").append(criteria.getKey()).append(" ").append(criteria.getOperation()).append(" ?");
+                parameters.add(criteria.getValue());
+            }
         }
 
         try (Connection connection = getConnection();
