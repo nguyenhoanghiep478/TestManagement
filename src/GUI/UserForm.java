@@ -12,7 +12,7 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.Font;
 import java.awt.Color;
 
-public class UserForm extends JFrame {
+public class UserForm extends JPanel {
     private JTextField txtEmail, txtFullName;
     private JComboBox<String> cbIsAdmin;
     private JTable table;
@@ -22,17 +22,13 @@ public class UserForm extends JFrame {
     private JTextField UserName;
     private final UserBUS userBUS=new UserBUS();
     public UserForm() {
-    	getContentPane().setBackground(new Color(255, 255, 255));
-    	getContentPane().setFont(new Font("Tahoma", Font.PLAIN, 14));
-        setTitle("Quản lý Người Dùng");
-        setSize(842, 631);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLocationRelativeTo(null);
-        getContentPane().setLayout(null);
-        
+    	setBackground(new Color(255, 255, 255));
+    	setFont(new Font("Tahoma", Font.PLAIN, 14));
+        setSize(1150, 631);
+        setLayout(null);
         JScrollPane scrollPane = new JScrollPane();
-        scrollPane.setBounds(10, 59, 798, 253);
-        getContentPane().add(scrollPane);
+        scrollPane.setBounds(14, 10, 1115, 372);
+        add(scrollPane);
 
 
         model = new DefaultTableModel(new String[]{"Id", "Name", "Email","FullName","Role"}, 0);
@@ -40,7 +36,7 @@ public class UserForm extends JFrame {
         table.setBackground(new Color(255, 255, 255));
         table.setFont(new Font("Times New Roman", Font.PLAIN, 18));
         table.setRowHeight(20);
-        table.getTableHeader().setFont(new Font("Tahoma", Font.PLAIN, 16));
+        table.getTableHeader().setFont(new Font("Times New Roman", Font.PLAIN, 18));
         scrollPane.getViewport().setBackground(Color.WHITE);
         table.getTableHeader().setBackground(Color.WHITE);
         scrollPane.setViewportView(table);
@@ -48,53 +44,53 @@ public class UserForm extends JFrame {
         JPanel panelForm = new JPanel();
         panelForm.setBackground(new Color(255, 255, 255));
         panelForm.setLayout(null);
-        panelForm.setBounds(10, 322, 802, 262);
-        getContentPane().add(panelForm);
+        panelForm.setBounds(14, 392, 1115, 206);
+      add(panelForm);
         
         JLabel lblEmail = new JLabel("Email:");
         lblEmail.setFont(new Font("Times New Roman", Font.PLAIN, 18));
-        lblEmail.setBounds(10, 89, 51, 25);
+        lblEmail.setBounds(0, 89, 51, 25);
         panelForm.add(lblEmail);
         
         txtEmail = new JTextField(20);
         txtEmail.setFont(new Font("Times New Roman", Font.PLAIN, 18));
-        txtEmail.setBounds(71, 83, 234, 46);
+        txtEmail.setBounds(70, 79, 251, 46);
         panelForm.add(txtEmail);
         
 
         
         txtFullName = new JTextField(20);
         txtFullName.setFont(new Font("Times New Roman", Font.PLAIN, 18));
-        txtFullName.setBounds(419, 10, 234, 46);
+        txtFullName.setBounds(638, 10, 251, 46);
         panelForm.add(txtFullName);
         
         JLabel lblIsAdmin = new JLabel("Role:");
         lblIsAdmin.setFont(new Font("Times New Roman", Font.PLAIN, 18));
-        lblIsAdmin.setBounds(329, 89, 43, 25);
+        lblIsAdmin.setBounds(540, 100, 43, 25);
         panelForm.add(lblIsAdmin);
         
         cbIsAdmin = new JComboBox<>(new String[]{"User", "Admin"});
         cbIsAdmin.setBackground(new Color(255, 255, 255));
         cbIsAdmin.setFont(new Font("Times New Roman", Font.PLAIN, 18));
-        cbIsAdmin.setBounds(419, 78, 112, 46);
+        cbIsAdmin.setBounds(638, 89, 136, 46);
 
 
 
         panelForm.add(cbIsAdmin);
         
         JLabel lblUsername = new JLabel("Name:");
-        lblUsername.setBounds(10, 20, 74, 25);
+        lblUsername.setBounds(0, 20, 74, 25);
         panelForm.add(lblUsername);
         lblUsername.setFont(new Font("Times New Roman", Font.PLAIN, 18));
         
         UserName = new JTextField(20);
-        UserName.setBounds(71, 10, 234, 46);
+        UserName.setBounds(70, 10, 251, 46);
         panelForm.add(UserName);
         UserName.setFont(new Font("Times New Roman", Font.PLAIN, 18));
         
         btnAdd = new JButton("Thêm");
         btnAdd.setBackground(new Color(255, 255, 255));
-        btnAdd.setBounds(677, 10, 121, 46);
+        btnAdd.setBounds(994, 9, 121, 46);
         panelForm.add(btnAdd);
         btnAdd.setHorizontalAlignment(SwingConstants.LEFT);
         btnAdd.setIcon(new ImageIcon(getClass().getClassLoader().getResource("ICON/add.png")));
@@ -102,7 +98,7 @@ public class UserForm extends JFrame {
         
         btnUpdate = new JButton("Sửa");
         btnUpdate.setBackground(new Color(255, 255, 255));
-        btnUpdate.setBounds(677, 81, 121, 46);
+        btnUpdate.setBounds(994, 78, 121, 46);
         panelForm.add(btnUpdate);
         btnUpdate.setHorizontalAlignment(SwingConstants.LEFT);
         btnUpdate.setIcon(new ImageIcon(getClass().getClassLoader().getResource("ICON/edit.png")));
@@ -110,14 +106,14 @@ public class UserForm extends JFrame {
         
         btnDelete = new JButton("Xóa");
         btnDelete.setBackground(new Color(255, 255, 255));
-        btnDelete.setBounds(677, 147, 121, 46);
+        btnDelete.setBounds(994, 148, 121, 46);
         panelForm.add(btnDelete);
         btnDelete.setHorizontalAlignment(SwingConstants.LEFT);
         btnDelete.setIcon(new ImageIcon(getClass().getClassLoader().getResource("ICON/delete.png")));
         btnDelete.setFont(new Font("Times New Roman", Font.PLAIN, 18));
         
         JLabel lblFullName = new JLabel("FullName:");
-        lblFullName.setBounds(329, 19, 80, 25);
+        lblFullName.setBounds(540, 20, 80, 25);
         panelForm.add(lblFullName);
         lblFullName.setFont(new Font("Times New Roman", Font.PLAIN, 18));
 
@@ -126,10 +122,6 @@ public class UserForm extends JFrame {
         addTableSelectionListener();
         btnAdd.addActionListener(e -> addUser());
         loadTableData();
-        JLabel lblQunLNgi = new JLabel("Quản lí người dùng");
-        lblQunLNgi.setFont(new Font("Times New Roman", Font.BOLD, 26));
-        lblQunLNgi.setBounds(274, 10, 259, 40);
-        getContentPane().add(lblQunLNgi);
     }
     
     private void addUser() {
