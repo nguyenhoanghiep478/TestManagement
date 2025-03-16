@@ -12,4 +12,6 @@ public interface IQuestionBUS{
     boolean updateQuestion(QuestionEntity question);
     boolean deleteQuestion(int questionId);
     List<QuestionEntity>searchByField(String field,String content);
+    int countAnswers(int id);
+    void addQuestionFromExcel(String filePath);
 }

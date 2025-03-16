@@ -56,7 +56,7 @@ public class QuestionForm extends JPanel{
         scrollPane.setBounds(10, 76, 1130, 268);
         add(scrollPane);
 
-        model = new DefaultTableModel(new String[]{"Id", "Content", "Topic", "Level", "Số câu trả lời"}, 0);
+        model = new DefaultTableModel(new String[]{"Id", "Content", "Topic", "Level", "Số câu trả lời", "Picture"}, 0);
         table = new JTable(model);
         table.setFont(new Font("Times New Roman", Font.PLAIN, 18));
         table.setBackground(new Color(255, 255, 255));
@@ -227,11 +227,10 @@ public class QuestionForm extends JPanel{
 
         if (returnVal == JFileChooser.APPROVE_OPTION) {
             String filePath = fileChooser.getSelectedFile().getAbsolutePath();
-            questionDAO.addQuestionFromExcel(filePath);
+            questionBUS.addQuestionFromExcel(filePath);
             loadQuestions(questionBUS.getAllQuestion());
         }
     }
-
 
     private void updateQuestion() {
         try {
@@ -320,31 +319,46 @@ public class QuestionForm extends JPanel{
     public void loadQuestions(List<QuestionEntity> list) {
         model.setRowCount(0);
         for (QuestionEntity q : list) {
-            int answerCount = questionDAO.countAnswers(q.getqID()); // Lấy số lượng câu trả lời
+            int answerCount = questionBUS.countAnswers(q.getqID());
             model.addRow(new Object[]{
                     q.getqID(),
                     q.getqContent(),
                     topicBUS.findTopicById(q.getqTopicID()).getTpTitle(),
                     q.getqLevel(),
-                    answerCount // Hiển thị số câu trả lời
+                    answerCount,
+                    q.getqPictures() // Chỉ hiển thị đường dẫn ảnh
             });
         }
     }
 
+
     private void addTableSelectionListener() {
         table.getSelectionModel().addListSelectionListener(event -> {
             int selectedRow = table.getSelectedRow();
-            if (selectedRow != -1) { // Kiểm tra có hàng nào được chọn không
-                QuestionEntity questionEntity=questionBUS.findQuestionById(Integer.parseInt(model.getValueAt(selectedRow, 0).toString()));
-                ImageIcon imageIcon = new ImageIcon(new ImageIcon(questionEntity.getqPictures()).getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH));
-                lblPicture.setIcon(imageIcon);
+            if (selectedRow != -1) {
+                QuestionEntity questionEntity = questionBUS.findQuestionById(Integer.parseInt(model.getValueAt(selectedRow, 0).toString()));
+                String imageName = questionEntity.getqPictures(); // Chỉ có tên file (VD: "image1.png")
+
+                // Gán đường dẫn đầy đủ
+                String imagePath = "src/IMAGE/" + imageName;
+
+                // Kiểm tra xem ảnh có tồn tại không
+                File imageFile = new File(imagePath);
+                if (imageFile.exists()) {
+                    ImageIcon imageIcon = new ImageIcon(new ImageIcon(imagePath).getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH));
+                    lblPicture.setIcon(imageIcon);
+                } else {
+                    lblPicture.setIcon(null); // Nếu ảnh không tồn tại, xóa ảnh hiện tại
+                }
+
                 txtContent.setText(model.getValueAt(selectedRow, 1).toString());
                 cbTopic.setSelectedItem(model.getValueAt(selectedRow, 2).toString());
                 cbLevel.setSelectedItem(model.getValueAt(selectedRow, 3).toString());
-
             }
         });
     }
+
+
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> new QuestionForm().setVisible(true));

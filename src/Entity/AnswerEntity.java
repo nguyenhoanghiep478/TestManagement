@@ -2,7 +2,7 @@ package Entity;
 
 public class AnswerEntity {
     private int awID;
-    private int qID;
+    private long qID;
 
     public int getAwID() {
         return awID;
@@ -11,7 +11,7 @@ public class AnswerEntity {
     public AnswerEntity() {
     }
 
-    public AnswerEntity(int awID, int qID, String awContent, String awPictures, int isRight, int awStatus) {
+    public AnswerEntity(int awID, long qID, String awContent, String awPictures, int isRight, int awStatus) {
         this.awID = awID;
         this.qID = qID;
         this.awContent = awContent;
@@ -24,7 +24,7 @@ public class AnswerEntity {
         this.awID = awID;
     }
 
-    public int getqID() {
+    public long getqID() {
         return qID;
     }
 

@@ -97,52 +97,7 @@ public class QuestionDAO extends AbstractDAO<QuestionEntity> implements IQuestDA
         }
     }
 
-    public void addQuestionFromExcel(String filePath) {
-        try (FileInputStream fis = new FileInputStream(new File(filePath));
-             Workbook workbook = new XSSFWorkbook(fis)) {
 
-            Sheet sheet = workbook.getSheetAt(0);
-            Iterator<Row> rowIterator = sheet.iterator();
-            rowIterator.next(); // Bỏ qua hàng tiêu đề
-
-            String insertQuestionQuery = "INSERT INTO questions (qContent, qPictures, qTopicID, qLevel, qStatus) VALUES (?, ?, ?, ?, ?)";
-            String insertAnswerQuery = "INSERT INTO answers (qID, awContent, awPictures, isRight) VALUES (?, ?, ?, ?)";
-
-            while (rowIterator.hasNext()) {
-                Row row = rowIterator.next();
-
-                String questionContent = row.getCell(0) != null ? row.getCell(0).getStringCellValue().trim() : "";
-                String questionImageName = row.getCell(1) != null ? row.getCell(1).getStringCellValue().trim() : ""; // Chỉ lấy tên file
-
-                int topicID = (int) row.getCell(2).getNumericCellValue();
-                String level = row.getCell(3) != null ? row.getCell(3).getStringCellValue().trim() : "";
-                int status = 1;
-
-                if (questionContent.isEmpty() && questionImageName.isEmpty()) {
-                    continue;
-                }
-
-                long questionID = save(insertQuestionQuery, questionContent, questionImageName, topicID, level, status);
-
-                for (int i = 4; i < row.getLastCellNum(); i += 3) {
-                    String answerContent = row.getCell(i) != null ? row.getCell(i).getStringCellValue().trim() : "";
-                    String answerImageName = row.getCell(i + 1) != null ? row.getCell(i + 1).getStringCellValue().trim() : ""; // Chỉ lấy tên file
-
-                    int isRight = (int) row.getCell(i + 2).getNumericCellValue();
-
-                    if (answerContent.isEmpty() && answerImageName.isEmpty()) {
-                        continue;
-                    }
-
-                    update(insertAnswerQuery, questionID, answerContent, answerImageName, isRight);
-                }
-            }
-            JOptionPane.showMessageDialog(null, "Nhập dữ liệu thành công!", "Thành công", JOptionPane.INFORMATION_MESSAGE);
-        } catch (Exception e) {
-            e.printStackTrace();
-            JOptionPane.showMessageDialog(null, "Lỗi khi nhập dữ liệu từ Excel!", "Lỗi", JOptionPane.ERROR_MESSAGE);
-        }
-    }
 
 
 
@@ -170,9 +125,6 @@ public class QuestionDAO extends AbstractDAO<QuestionEntity> implements IQuestDA
         );
     }
 
-    public int countAnswers(int questionID) {
-        String query = "SELECT COUNT(*) FROM answers WHERE qID = ?";
-        return count(query, questionID);
-    }
+
 
 }
