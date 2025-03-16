@@ -20,7 +20,7 @@ import java.awt.Color;
 import java.sql.Date;
 import java.util.List;
 
-public class TestManagementForm extends JFrame {
+public class TestManagementForm extends JPanel {
     private JTextField txtEmail, txtFullName;
     private JComboBox<String> cbIsAdmin;
     private JTable table;
@@ -32,17 +32,16 @@ public class TestManagementForm extends JFrame {
     private List<TopicEntity> topics;
     private final ITestService testService =new TestService(new TestDAO(new TestMapper()));
     public TestManagementForm() {
-        getContentPane().setBackground(new Color(255, 255, 255));
-        getContentPane().setFont(new Font("Tahoma", Font.PLAIN, 14));
-        setTitle("Quản lý Đề thi");
+        setBackground(new Color(255, 255, 255));
+        setFont(new Font("Tahoma", Font.PLAIN, 14));
+
         setSize(1150, 631);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLocationRelativeTo(null);
-        getContentPane().setLayout(null);
+
+        setLayout(null);
 
         JScrollPane scrollPane = new JScrollPane();
         scrollPane.setBounds(10, 59, 798, 253);
-        getContentPane().add(scrollPane);
+        add(scrollPane);
 
         this.topics = topicBUS.getAllTopic();
 
@@ -61,7 +60,7 @@ public class TestManagementForm extends JFrame {
         panelForm.setBackground(new Color(255, 255, 255));
         panelForm.setLayout(null);
         panelForm.setBounds(10, 322, 802, 400);
-        getContentPane().add(panelForm);
+        add(panelForm);
 
         JLabel lblEmail = new JLabel("Title:");
         lblEmail.setFont(new Font("Times New Roman", Font.PLAIN, 18));
@@ -182,7 +181,7 @@ public class TestManagementForm extends JFrame {
         JLabel lblQunLNgi = new JLabel("Quản lí bài thi");
         lblQunLNgi.setFont(new Font("Times New Roman", Font.BOLD, 26));
         lblQunLNgi.setBounds(274, 10, 259, 40);
-        getContentPane().add(lblQunLNgi);
+        add(lblQunLNgi);
     }
 
     private void addUser() {

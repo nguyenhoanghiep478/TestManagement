@@ -1,5 +1,6 @@
 package DAO;
 
+import Entity.MyCustomExam;
 import Entity.TestEntity;
 
 import java.util.List;
@@ -34,4 +35,5 @@ public interface ITestDAO {
     void updateTest(TestEntity test);
 
     void updateTestStructure(TestEntity test);
+    MyCustomExam getExamByCode(String testCode, String exCode);
 }

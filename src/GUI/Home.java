@@ -208,34 +208,44 @@ public class Home extends JFrame {
 
 		sideBar.add(btnQuestion);
 		
-		JButton btnAnswer = new JButton("CÂU TRẢ LỜI");
-		btnAnswer.addActionListener(new ActionListener() {
+		JButton btnStructure = new JButton("CẤU TRÚC BÀI THI");
+		btnStructure.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				if(userEntity.getIsAdmin()==0){
+					JOptionPane.showMessageDialog(null, "bạn không có quyền này");
+					return;
+				}
+				TestManagementForm userForm = new TestManagementForm();
+				userForm.setVisible(true);
+				main_Content.removeAll();
+				main_Content.add(userForm);
+				main_Content.revalidate(); // Cập nhật layout
+				main_Content.repaint(); // Vẽ lại giao diện
 			}
 		});
-		btnAnswer.setHorizontalAlignment(SwingConstants.LEFT);
+		btnStructure.setHorizontalAlignment(SwingConstants.LEFT);
 
-		btnAnswer.setFont(new Font("Times New Roman", Font.PLAIN, 16));
-		btnAnswer.setBounds(0, 389, 215, 49);
-		btnAnswer.setIcon(new ImageIcon(getClass().getClassLoader().getResource("ICON/choose.png")));
-		btnAnswer.setBorder(BorderFactory.createEmptyBorder(0, 30, 0, 0)); // (top, left, bottom, right)
-		btnAnswer.setBorderPainted(false);
-		btnAnswer.setBackground(sidebarColor);
-		btnAnswer.setForeground(Color.WHITE);
-		btnAnswer.setFocusPainted(false);
-		btnAnswer.setIconTextGap(5); // Thêm hiệu ứng hover
-		btnAnswer.addMouseListener(new MouseAdapter() {
+		btnStructure.setFont(new Font("Times New Roman", Font.PLAIN, 16));
+		btnStructure.setBounds(0, 389, 215, 49);
+		btnStructure.setIcon(new ImageIcon(getClass().getClassLoader().getResource("ICON/structure.png")));
+		btnStructure.setBorder(BorderFactory.createEmptyBorder(0, 30, 0, 0)); // (top, left, bottom, right)
+		btnStructure.setBorderPainted(false);
+		btnStructure.setBackground(sidebarColor);
+		btnStructure.setForeground(Color.WHITE);
+		btnStructure.setFocusPainted(false);
+		btnStructure.setIconTextGap(5); // Thêm hiệu ứng hover
+		btnStructure.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseEntered(MouseEvent e) {
-				btnAnswer.setBackground(hoverColor);
+				btnStructure.setBackground(hoverColor);
 			}
 
 			@Override
 			public void mouseExited(MouseEvent e) {
-				btnAnswer.setBackground(sidebarColor);
+				btnStructure.setBackground(sidebarColor);
 			}
 		});
-		sideBar.add(btnAnswer);
+		sideBar.add(btnStructure);
 		
 		JButton btnStatic = new JButton("THỐNG KÊ");
 		btnStatic.addActionListener(new ActionListener() {
@@ -244,7 +254,7 @@ public class Home extends JFrame {
 					JOptionPane.showMessageDialog(null, "bạn không có quyền này");
 					return;
 				}
-				ExamCandidatesForm userForm = new ExamCandidatesForm("test_001");
+				ListTestForm userForm = new ListTestForm("static");
 				userForm.setVisible(true);
 				main_Content.removeAll();
 				main_Content.add(userForm);
@@ -305,11 +315,12 @@ public class Home extends JFrame {
 		});
 		sideBar.add(btnLogout);
 		
-		JLabel lblNewLabel = new JLabel("UserName");
-		lblNewLabel.setForeground(new Color(255, 255, 255));
-		lblNewLabel.setFont(new Font("Times New Roman", Font.PLAIN, 18));
-		lblNewLabel.setBounds(60, 70, 106, 38);
-		sideBar.add(lblNewLabel);
+		JLabel lbUserName = new JLabel("UserName");
+		lbUserName.setForeground(new Color(255, 255, 255));
+		lbUserName.setFont(new Font("Times New Roman", Font.PLAIN, 18));
+		lbUserName.setBounds(82, 88, 106, 38);
+		lbUserName.setText(userEntity.getUserName());
+		sideBar.add(lbUserName);
 		
 		JButton btnTest = new JButton("BÀI THI");
 		btnTest.setHorizontalAlignment(SwingConstants.LEFT);
@@ -350,6 +361,40 @@ public class Home extends JFrame {
 		lblHello.setFont(new Font("Times New Roman", Font.PLAIN, 18));
 		lblHello.setBounds(82, 50, 106, 28);
 		sideBar.add(lblHello);
+		
+		JButton btnEditInfo = new JButton("EditInfo");
+		btnEditInfo.setHorizontalAlignment(SwingConstants.LEFT);
+		btnEditInfo.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				EditInfo userForm = new EditInfo(userEntity);
+				userForm.setVisible(true);
+				main_Content.removeAll();
+				main_Content.add(userForm);
+				main_Content.revalidate(); // Cập nhật layout
+				main_Content.repaint(); // Vẽ lại giao diện
+			}
+		});
+		btnEditInfo.setFont(new Font("Times New Roman", Font.PLAIN, 16));
+		btnEditInfo.setBounds(0, 550, 215, 49);
+		btnEditInfo.setIcon(new ImageIcon(getClass().getClassLoader().getResource("ICON/detail.png")));
+		btnEditInfo.setBorder(BorderFactory.createEmptyBorder(0, 30, 0, 0)); // (top, left, bottom, right)
+		btnEditInfo.setBorderPainted(false);
+		btnEditInfo.setBackground(sidebarColor);
+		btnEditInfo.setForeground(Color.WHITE);
+		btnEditInfo.setFocusPainted(false);
+		btnEditInfo.setIconTextGap(5); // Thêm hiệu ứng hover
+		btnEditInfo.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				btnEditInfo.setBackground(hoverColor);
+			}
+
+			@Override
+			public void mouseExited(MouseEvent e) {
+				btnEditInfo.setBackground(sidebarColor);
+			}
+		});
+		sideBar.add(btnEditInfo);
 		setVisible(true);
 
 	}

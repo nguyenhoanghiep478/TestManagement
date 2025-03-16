@@ -21,18 +21,19 @@ public class TopicDAO extends AbstractDAO<TopicEntity> implements ITopicDAO {
 
     @Override
     public TopicEntity findBy(int testID) {
-        List<Criteria> criterias = List.of(new Criteria("tpID", "=", testID));
-        return searchBy(criterias, topicMapper, "topics").stream().findFirst().orElse(null);
+        String sql="select * from topics where tpStatus=?";
+        return query(sql,topicMapper,1).stream().findFirst().orElse(null);
     }
 
     @Override
     public TopicEntity findByTitle(String name) {
-        List<Criteria> criterias = List.of(new Criteria("tpTitle", "=", name));
-        return searchBy(criterias, topicMapper, "topics").stream().findFirst().orElse(null);
+        String sql="select * from topics where tpTitle=? and tpStatus=1";
+        return query(sql,topicMapper,name).stream().findFirst().orElse(null);
     }
 
     public List<TopicEntity> findAll() {
-        return searchBy(Collections.emptyList(),topicMapper, "topics");
+        String sql="select * from topics where tpStatus=?";
+        return query(sql,topicMapper,1);
     }
     @Override
     public long insert(TopicEntity result) {

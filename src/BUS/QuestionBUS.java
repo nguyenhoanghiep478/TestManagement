@@ -1,6 +1,7 @@
 package BUS;
 
 import DAO.impl.QuestionDAO;
+import Entity.AnswerEntity;
 import Entity.QuestionEntity;
 import Entity.TopicEntity;
 
@@ -50,5 +51,8 @@ public class QuestionBUS implements IQuestionBUS{
           }
             return l.stream().filter(question ->question.getqTopicID()==topicEntity.getTpID()).toList();
         }
+    }
+    public List<QuestionEntity>findAllInId(String listId){
+        return questionDAO.findAllInId(listId);
     }
 }

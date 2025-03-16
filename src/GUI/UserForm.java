@@ -24,7 +24,7 @@ public class UserForm extends JPanel {
     public UserForm() {
     	setBackground(new Color(255, 255, 255));
     	setFont(new Font("Tahoma", Font.PLAIN, 14));
-        setSize(1150, 631);
+        setSize(1150, 626);
         setLayout(null);
         JScrollPane scrollPane = new JScrollPane();
         scrollPane.setBounds(14, 10, 1115, 372);

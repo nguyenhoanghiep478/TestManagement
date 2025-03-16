@@ -71,4 +71,9 @@ public class AnswerDAO  extends AbstractDAO<AnswerEntity> implements IAnswerDAO 
                 test.getAwID()
         );
     }
+
+    public List<AnswerEntity> findByQuestID(int qId) {
+        String sql="select * from answers  where qId=?";
+        return query(sql,rowMapper,qId);
+    }
 }
