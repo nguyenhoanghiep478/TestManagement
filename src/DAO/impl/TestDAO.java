@@ -2,6 +2,7 @@ package DAO.impl;
 
 import DAO.ITestDAO;
 import Entity.Criteria;
+import Entity.MyCustomExam;
 import Entity.TestEntity;
 import Utils.Mapper.impl.TestMapper;
 import lombok.RequiredArgsConstructor;
@@ -296,5 +297,24 @@ public class TestDAO extends AbstractDAO<TestEntity> implements ITestDAO {
             e.printStackTrace();
         }
         return -1;
+    }
+    public  MyCustomExam getExamByCode(String testCode, String exCode)  {
+        MyCustomExam myCustomExam=null;
+        try (Connection conn = getConnection()) {
+            String sql = "SELECT t.testTitle, t.testDate, t.testTime, e.ex_quesIDs " +
+                    "FROM test t JOIN exams e ON t.testCode = e.testCode " +
+                    "WHERE t.testCode = ? AND e.exCode = ?";
+           PreparedStatement ps = conn.prepareStatement(sql);
+                ps.setString(1, testCode);
+                ps.setString(2, exCode);
+                ResultSet rs = ps.executeQuery();
+                    if (rs.next()) {
+                        myCustomExam = new MyCustomExam(exCode,rs.getString("testTitle"),rs.getInt("testTime"), rs.getDate("testDate"), rs.getString("ex_quesIDs"));
+                    }
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+        return myCustomExam;
     }
 }

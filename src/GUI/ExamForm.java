@@ -8,21 +8,28 @@ import java.util.stream.Collectors;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 
+import BUS.QuestionBUS;
 import BUS.UserBUS;
 import DAO.impl.ExamDAO;
-import Entity.ExamEntity;
-import Entity.TopicEntity;
-import Entity.UserEntity;
+import DAO.impl.TestDAO;
+import Entity.*;
 import Service.impl.ExamService;
+import Service.impl.TestService;
+import Service.impl.WordExportService;
 import Utils.Mapper.impl.ExamMapper;
+import Utils.Mapper.impl.TestMapper;
 import lombok.RequiredArgsConstructor;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 public class ExamForm extends JPanel {
 	private ExamService examService=new ExamService(new ExamDAO(new ExamMapper()));
+	private TestService testService=new TestService(new TestDAO(new TestMapper()));
+	private QuestionBUS questionBUS=new QuestionBUS();
 	    private JComboBox<String> cbTestCode;
 	    private JTable table;
 	    private DefaultTableModel model;
-	    private JButton btnAdd, btnUpdate, btnDelete;
+	    private JButton btnAdd, btnExport, btnDelete;
 	    private Font font = new Font("Arial", Font.PLAIN, 14);
 	    private JTextField UserName;
 	    private final UserBUS userBUS=new UserBUS();
@@ -79,13 +86,38 @@ public class ExamForm extends JPanel {
 	        btnAdd.setIcon(new ImageIcon(getClass().getClassLoader().getResource("ICON/add.png")));
 	        btnAdd.setFont(new Font("Times New Roman", Font.PLAIN, 18));
 	        
-	        btnUpdate = new JButton("Sửa");
-	        btnUpdate.setBackground(new Color(255, 255, 255));
-	        btnUpdate.setBounds(994, 78, 121, 46);
-	        panelForm.add(btnUpdate);
-	        btnUpdate.setHorizontalAlignment(SwingConstants.LEFT);
-	        btnUpdate.setIcon(new ImageIcon(getClass().getClassLoader().getResource("ICON/edit.png")));
-	        btnUpdate.setFont(new Font("Times New Roman", Font.PLAIN, 18));
+	        btnExport = new JButton("Xuất đề thi");
+	        btnExport.addActionListener(new ActionListener() {
+	        	public void actionPerformed(ActionEvent e) {
+	        		  try {
+	        			  int selectedRow = table.getSelectedRow();
+
+	        			  if (selectedRow != -1) { // Kiểm tra xem có hàng nào được chọn không
+	        			      String testCode = table.getValueAt(selectedRow, 0).toString();  // Lấy dữ liệu từ cột 0 (testCode)
+	        			      String exCode = table.getValueAt(selectedRow, 1).toString();    // Lấy dữ liệu từ cột 1 (exCode)
+			                     MyCustomExam exam = testService.getExamByCode(testCode, exCode);
+			                     if (exam == null) {
+			                         JOptionPane.showMessageDialog(null, "Không tìm thấy đề thi!");
+			                         return;
+			                     }
+			                     List<QuestionEntity> questions = questionBUS.findAllInId(exam.getEx_QuestIDs());
+							  WordExportService wordExportService=new WordExportService();
+			                     wordExportService.exportExamToWord(exam, questions, "Exam_" + exCode + ".docx");
+			                     JOptionPane.showMessageDialog(null, "Xuất file thành công!");
+	        			  } else {
+	        			      JOptionPane.showMessageDialog(null, "Vui lòng chọn một hàng!");
+	        			  }
+		                 } catch (Exception ex) {
+		                     JOptionPane.showMessageDialog(null, "Lỗi: " + ex.getMessage());
+		                 }
+	        	}
+	        });
+	        btnExport.setBackground(new Color(255, 255, 255));
+	        btnExport.setBounds(994, 78, 121, 46);
+	        panelForm.add(btnExport);
+	        btnExport.setHorizontalAlignment(SwingConstants.LEFT);
+	        btnExport.setIcon(new ImageIcon(getClass().getClassLoader().getResource("ICON/edit.png")));
+	        btnExport.setFont(new Font("Times New Roman", Font.PLAIN, 18));
 	        
 	        btnDelete = new JButton("Xóa");
 	        btnDelete.setBackground(new Color(255, 255, 255));
@@ -117,8 +149,8 @@ public class ExamForm extends JPanel {
 	private void loadTableData() {
 		model.setRowCount(0); // Xóa dữ liệu cũ
 		for (ExamEntity examEntity : examService.getAllExam()) {
-			model.addRow(new Object[]{examEntity.getTestCode(),examEntity.getExOrder(),
-					examEntity.getExCode(),examEntity.getEx_quesId()});
+			model.addRow(new Object[]{examEntity.getTestCode(),examEntity.getExCode(),
+					examEntity.getExOrder(),examEntity.getEx_quesId()});
 		}
 	}
 }

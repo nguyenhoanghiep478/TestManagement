@@ -1,6 +1,7 @@
 package Service.impl;
 
 import DAO.ITestDAO;
+import Entity.MyCustomExam;
 import Entity.TestEntity;
 import Service.ITestService;
 import lombok.RequiredArgsConstructor;
@@ -84,6 +85,9 @@ public class TestService implements ITestService {
 
         testDAO.updateTest(test);
         testDAO.updateTestStructure(test);
+    }
+    public MyCustomExam getExamByCode(String testCode, String exCode){
+        return testDAO.getExamByCode(testCode,exCode);
     }
 
 

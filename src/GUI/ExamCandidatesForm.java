@@ -6,15 +6,16 @@ import java.util.Vector;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 
-public class ExamCandidatesForm extends JPanel {
+public class ExamCandidatesForm extends JFrame {
 	private JLabel lblSubject, lblExamDate, lblTotalCandidates, lblParticipated, lblResultStatus;
 	private JTable table;
 	private DefaultTableModel model;
 
 	public ExamCandidatesForm(String testCode) {
 		setBackground(new Color(255, 255, 255));
-		setPreferredSize(new Dimension(1150, 630)); // Đặt kích thước JPanel
+		setSize(new Dimension(1150, 630)); // Đặt kích thước JPanel
 		setLayout(new BorderLayout());
+		setLocationRelativeTo(null); // Căn giữa màn hình
 
 		// Panel chứa thông tin chung
 		JPanel panelTop = new JPanel(new GridLayout(3, 2, 10, 10));
@@ -48,14 +49,16 @@ public class ExamCandidatesForm extends JPanel {
 
 		add(panelTop, BorderLayout.NORTH);
 		add(scrollPane, BorderLayout.CENTER);
-
+		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		loadExamData(testCode);
+		setVisible(true);
+
 	}
 
 	private void loadExamData(String testCode) {
 		String url = "jdbc:mysql://localhost:3306/tracnghiem";
 		String user = "root";
-		String password = "123456";
+		String password = "minhmankieu456";
 
 		try (Connection conn = DriverManager.getConnection(url, user, password)) {
 			// Lấy thông tin bài thi
@@ -107,4 +110,7 @@ public class ExamCandidatesForm extends JPanel {
 	}
 
 	// Test hiển thị JPanel trong JFrame
+	public static void main(String[] args) {
+		SwingUtilities.invokeLater(() ->  new ExamCandidatesForm("test_001"));
+	}
 }

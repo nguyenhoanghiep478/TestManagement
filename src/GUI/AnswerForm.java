@@ -34,7 +34,6 @@ public class AnswerForm extends JFrame {
         this.questionEntity=question;
         setTitle("Quản lý Câu Trả Lời");
         setSize(803, 663);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
         getContentPane().setLayout(null);
 

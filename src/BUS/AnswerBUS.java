@@ -25,6 +25,9 @@ public class AnswerBUS implements IAnswerBUS{
          answerDAO.insert(answer);
          return true;
     }
+    public List<AnswerEntity> findAnswerByQuestId(int qId) {
+        return answerDAO.findByQuestID(qId);
+    }
 
     @Override
     public boolean updateAnswer(AnswerEntity answer) {
