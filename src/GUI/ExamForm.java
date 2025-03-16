@@ -29,7 +29,7 @@ public class ExamForm extends JPanel {
 	    private JComboBox<String> cbTestCode;
 	    private JTable table;
 	    private DefaultTableModel model;
-	    private JButton btnAdd, btnExport, btnDelete;
+	    private JButton btnAdd, btnExport;
 	    private Font font = new Font("Arial", Font.PLAIN, 14);
 	    private JTextField UserName;
 	    private final UserBUS userBUS=new UserBUS();
@@ -56,7 +56,7 @@ public class ExamForm extends JPanel {
 	        JPanel panelForm = new JPanel();
 	        panelForm.setBackground(new Color(255, 255, 255));
 	        panelForm.setLayout(null);
-	        panelForm.setBounds(14, 392, 1115, 206);
+	        panelForm.setBounds(24, 392, 1115, 206);
 	      add(panelForm);
 	        
 	        cbTestCode = new JComboBox<>(new String[]{"User", "Admin"});
@@ -79,6 +79,10 @@ public class ExamForm extends JPanel {
 	        UserName.setFont(new Font("Times New Roman", Font.PLAIN, 18));
 	        
 	        btnAdd = new JButton("Thêm");
+	        btnAdd.addActionListener(new ActionListener() {
+	        	public void actionPerformed(ActionEvent e) {
+	        	}
+	        });
 	        btnAdd.setBackground(new Color(255, 255, 255));
 	        btnAdd.setBounds(994, 9, 121, 46);
 	        panelForm.add(btnAdd);
@@ -86,7 +90,7 @@ public class ExamForm extends JPanel {
 	        btnAdd.setIcon(new ImageIcon(getClass().getClassLoader().getResource("ICON/add.png")));
 	        btnAdd.setFont(new Font("Times New Roman", Font.PLAIN, 18));
 	        
-	        btnExport = new JButton("Xuất đề thi");
+	        btnExport = new JButton("In đề");
 	        btnExport.addActionListener(new ActionListener() {
 	        	public void actionPerformed(ActionEvent e) {
 	        		  try {
@@ -113,29 +117,16 @@ public class ExamForm extends JPanel {
 	        	}
 	        });
 	        btnExport.setBackground(new Color(255, 255, 255));
-	        btnExport.setBounds(994, 78, 121, 46);
+	        btnExport.setBounds(994, 65, 121, 46);
 	        panelForm.add(btnExport);
 	        btnExport.setHorizontalAlignment(SwingConstants.LEFT);
-	        btnExport.setIcon(new ImageIcon(getClass().getClassLoader().getResource("ICON/edit.png")));
+	        btnExport.setIcon(new ImageIcon(getClass().getClassLoader().getResource("ICON/word.png")));
 	        btnExport.setFont(new Font("Times New Roman", Font.PLAIN, 18));
-	        
-	        btnDelete = new JButton("Xóa");
-	        btnDelete.setBackground(new Color(255, 255, 255));
-	        btnDelete.setBounds(994, 148, 121, 46);
-	        panelForm.add(btnDelete);
-	        btnDelete.setHorizontalAlignment(SwingConstants.LEFT);
-	        btnDelete.setIcon(new ImageIcon(getClass().getClassLoader().getResource("ICON/delete.png")));
-	        btnDelete.setFont(new Font("Times New Roman", Font.PLAIN, 18));
 	        
 	        JLabel lblTestcode = new JLabel("TestCode");
 	        lblTestcode.setFont(new Font("Times New Roman", Font.PLAIN, 18));
 	        lblTestcode.setBounds(688, 20, 74, 25);
 	        panelForm.add(lblTestcode);
-
-//	        btnDelete.addActionListener(e -> deleteUser());
-//	        btnUpdate.addActionListener(e -> updateUser());
-//	        addTableSelectionListener();
-//	        btnAdd.addActionListener(e -> addUser());
 	        loadTableData();
 			loadTestCode();
 	    }
