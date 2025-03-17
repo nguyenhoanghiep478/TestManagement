@@ -28,11 +28,9 @@ public class QuestionDAO extends AbstractDAO<QuestionEntity> implements IQuestDA
     public void delete(int questID) {
         String deleteAnswersQuery = "DELETE FROM answers WHERE qID = ?";
         String deleteQuestionQuery = "DELETE FROM questions WHERE qID = ?";
-
         update(deleteAnswersQuery, questID);
         update(deleteQuestionQuery, questID);
     }
-
 
     @Override
     public QuestionEntity findBy(int rsNum) {
@@ -82,35 +80,15 @@ public class QuestionDAO extends AbstractDAO<QuestionEntity> implements IQuestDA
         );
     }
 
-    private String saveImage(File imageFile) {
-        try {
-            File destFolder = new File("src/IMAGE/");
-            if (!destFolder.exists()) {
-                destFolder.mkdirs(); // Tạo thư mục nếu chưa có
-            }
-            File destFile = new File(destFolder, imageFile.getName());
-            Files.copy(imageFile.toPath(), destFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
-            return "src/IMAGE/" + imageFile.getName();
-        } catch (IOException e) {
-            e.printStackTrace();
-            return "";
-        }
-    }
-
-
-
-
-
-
     @Override
     public void update(QuestionEntity result) {
         String query = """
             UPDATE questions
             SET
                 qContent = ?,
-                qPictures = ?, 
-                qTopicID = ?, 
-                qLevel = ?, 
+                qPictures = ?,
+                qTopicID = ?,
+                qLevel = ?,
                 qStatus = ?
             WHERE qID = ?;
         """;
@@ -124,7 +102,4 @@ public class QuestionDAO extends AbstractDAO<QuestionEntity> implements IQuestDA
                 result.getqID()
         );
     }
-
-
-
 }
