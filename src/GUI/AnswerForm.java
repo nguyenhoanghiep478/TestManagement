@@ -41,7 +41,7 @@ public class AnswerForm extends JFrame {
         scrollPane.setBounds(10, 76, 769, 250);
         getContentPane().add(scrollPane);
 
-        model = new DefaultTableModel(new String[]{ "Id","Content","Is Right"}, 0);
+        model = new DefaultTableModel(new String[]{ "Id","Content","Picture","Is Right"}, 0);
         table = new JTable(model);
         table.setFont(new Font("Times New Roman", Font.PLAIN, 18));
         scrollPane.setViewportView(table);
@@ -234,25 +234,44 @@ public class AnswerForm extends JFrame {
     private void addTableSelectionListener() {
         table.getSelectionModel().addListSelectionListener(event -> {
             int selectedRow = table.getSelectedRow();
-            if (selectedRow != -1) { // Kiểm tra có hàng nào được chọn không
+            if (selectedRow != -1) {
                 int id = (int) table.getValueAt(selectedRow, 0);
-                AnswerEntity answerEntity =answerBUS.findAnswerById(id);
-                ImageIcon imageIcon = new ImageIcon(new ImageIcon(answerEntity.getAwPictures()).getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH));
-                lblPicture.setIcon(imageIcon);
-                txtContent.setText(answerEntity.getAwContent());
-                cbIsRight.setSelectedItem(answerEntity.getIsRight()==1?"True":"False");
+                AnswerEntity answerEntity = answerBUS.findAnswerById(id);
+                String imageName = answerEntity.getAwPictures(); // Chỉ có tên file (VD: "answer1.png")
 
+                // Gán đường dẫn đầy đủ
+                String imagePath = "src/IMAGE/" + imageName;
+
+                // Kiểm tra xem ảnh có tồn tại không
+                File imageFile = new File(imagePath);
+                if (imageFile.exists()) {
+                    ImageIcon imageIcon = new ImageIcon(new ImageIcon(imagePath).getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH));
+                    lblPicture.setIcon(imageIcon);
+                } else {
+                    lblPicture.setIcon(null); // Nếu ảnh không tồn tại, xóa ảnh hiện tại
+                }
+
+                txtContent.setText(answerEntity.getAwContent());
+                cbIsRight.setSelectedItem(answerEntity.getIsRight() == 1 ? "True" : "False");
             }
         });
     }
+
     public void loadAnswer() {
-        List<AnswerEntity>g=answerBUS.getAllAnswer();
-        List<AnswerEntity>list=answerBUS.getAllAnswer().stream().filter(answerEntity -> answerEntity.getqID()==questionEntity.getqID()).toList();
+        List<AnswerEntity> list = answerBUS.getAllAnswer().stream()
+                .filter(answerEntity -> answerEntity.getqID() == questionEntity.getqID())
+                .toList();
         model.setRowCount(0);
-        for (AnswerEntity answerEntity:list) {
-            model.addRow(new Object[]{answerEntity.getAwID(),answerEntity.getAwContent(),answerEntity.getIsRight()==1?"True":"Flase"});
+        for (AnswerEntity answerEntity : list) {
+            model.addRow(new Object[]{
+                    answerEntity.getAwID(),
+                    answerEntity.getAwContent(),
+                    answerEntity.getIsRight() == 1 ? "True" : "False",
+                    answerEntity.getAwPictures() // Hiển thị tên file ảnh
+            });
         }
     }
+
     public static void main(String[] args) {
 //        SwingUtilities.invokeLater(() -> new AnswerForm().setVisible(true));
     }
