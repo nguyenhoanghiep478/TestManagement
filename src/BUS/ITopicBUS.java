@@ -6,7 +6,7 @@ import Entity.UserEntity;
 import java.util.List;
 
 public interface ITopicBUS {
-    TopicEntity findTopicById(int testID);
+    TopicEntity findTopicById(int topicID);
     List<TopicEntity> getAllTopic();
     long createTopic(TopicEntity result);
     void updateTopic(TopicEntity result);

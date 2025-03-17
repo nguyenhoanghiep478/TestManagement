@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface ITopicDAO {
     void delete(int testID);
-    TopicEntity findBy(int testID);
+    TopicEntity findByID(int testID);
     TopicEntity findByTitle(String name);
     long insert(TopicEntity result);
     void update(TopicEntity result);

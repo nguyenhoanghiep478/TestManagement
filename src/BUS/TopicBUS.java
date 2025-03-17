@@ -10,7 +10,7 @@ public class TopicBUS implements ITopicBUS{
     private final ITopicDAO topicDAO=new TopicDAO();
     @Override
     public TopicEntity findTopicById(int testID) {
-        return topicDAO.findBy(testID);
+        return topicDAO.findByID(testID);
     }
 
     @Override

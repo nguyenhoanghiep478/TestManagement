@@ -20,9 +20,9 @@ public class TopicDAO extends AbstractDAO<TopicEntity> implements ITopicDAO {
     }
 
     @Override
-    public TopicEntity findBy(int testID) {
-        String sql="select * from topics where tpStatus=?";
-        return query(sql,topicMapper,1).stream().findFirst().orElse(null);
+    public TopicEntity findByID(int testID) {
+        String sql="select * from topics where tpID=?";
+        return query(sql,topicMapper,testID).stream().findFirst().orElse(null);
     }
 
     @Override
