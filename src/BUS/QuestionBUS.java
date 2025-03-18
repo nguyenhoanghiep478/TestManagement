@@ -34,7 +34,6 @@ public class QuestionBUS implements IQuestionBUS{
     @Override
     public long createQuestion(QuestionEntity question) {
         return questionDAO.insert(question);
-
     }
 
     @Override
