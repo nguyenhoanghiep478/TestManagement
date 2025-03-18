@@ -11,10 +11,10 @@ public interface ITestDAO {
     long insert(TestEntity test);
     void update(TestEntity test);
     int getTestTime(String testCode);
-    List<String> getQuestions(String testCode);
-    List<List<String>> getAnswers(String testCode);
+    List<String> getQuestions(String testCode,String exCode);
+    List<List<String>> getAnswers(String testCode,String exCode);
     List<String> getAnswerOptions(int qId);
-    List<Integer> getCorrectAnswers(String testCode);
+    List<Integer> getCorrectAnswers(String testCode,String exCode);
     void insertDefaultExamData();
     void deleteExamByTestCode(String testCode);
     void logAction(String content,int userId,String testCode);
@@ -36,4 +36,6 @@ public interface ITestDAO {
 
     void updateTestStructure(TestEntity test);
     MyCustomExam getExamByCode(String testCode, String exCode);
+
+    List<String> getExCodes(String testCode);
 }

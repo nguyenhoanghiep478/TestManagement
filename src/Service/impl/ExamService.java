@@ -14,4 +14,11 @@ public class ExamService implements IExamService {
     public List<ExamEntity> getAllExam() {
         return examDAO.getAll();
     }
+
+    @Override
+    public void generateExams(String testCode,int amount) {
+        for(int i = 0; i < amount; i++) {
+            examDAO.generateExams(testCode);
+        }
+    }
 }

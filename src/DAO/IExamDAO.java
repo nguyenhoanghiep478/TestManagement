@@ -10,4 +10,5 @@ public interface IExamDAO {
     long insert(ExamEntity exam);
     void update(ExamEntity exam);
     List<ExamEntity> getAll();
+    void generateExams(String testCode);
 }

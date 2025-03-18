@@ -30,18 +30,18 @@ public class TestService implements ITestService {
     }
 
     @Override
-    public List<String> getQuestions(String testCode) {
-        return testDAO.getQuestions(testCode);
+    public List<String> getQuestions(String testCode,String exCode) {
+        return testDAO.getQuestions(testCode,exCode);
     }
 
     @Override
-    public List<List<String>> getAnswers(String testCode) {
-        return testDAO.getAnswers(testCode);
+    public List<List<String>> getAnswers(String testCode,String exCode) {
+        return testDAO.getAnswers(testCode,exCode);
     }
 
     @Override
-    public List<Integer> getCorrectAnswers(String testCode) {
-        return testDAO.getCorrectAnswers(testCode);
+    public List<Integer> getCorrectAnswers(String testCode,String exCode) {
+        return testDAO.getCorrectAnswers(testCode,exCode);
     }
 
     @Override
@@ -86,6 +86,12 @@ public class TestService implements ITestService {
         testDAO.updateTest(test);
         testDAO.updateTestStructure(test);
     }
+
+    @Override
+    public List<String> getExCodes(String testCode) {
+        return testDAO.getExCodes(testCode);
+    }
+
     public MyCustomExam getExamByCode(String testCode, String exCode){
         return testDAO.getExamByCode(testCode,exCode);
     }

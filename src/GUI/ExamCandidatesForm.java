@@ -58,7 +58,7 @@ public class ExamCandidatesForm extends JFrame {
 	private void loadExamData(String testCode) {
 		String url = "jdbc:mysql://localhost:3306/tracnghiem";
 		String user = "root";
-		String password = "minhmankieu456";
+		String password = "123456";
 
 		try (Connection conn = DriverManager.getConnection(url, user, password)) {
 			// Lấy thông tin bài thi

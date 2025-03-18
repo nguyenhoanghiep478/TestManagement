@@ -81,6 +81,9 @@ public class ExamForm extends JPanel {
 	        btnAdd = new JButton("Thêm");
 	        btnAdd.addActionListener(new ActionListener() {
 	        	public void actionPerformed(ActionEvent e) {
+					String testCode = cbTestCode.getSelectedItem().toString();
+					int testAmount = Integer.parseInt(UserName.getText());
+					examService.generateExams(testCode, testAmount);
 	        	}
 	        });
 	        btnAdd.setBackground(new Color(255, 255, 255));
@@ -104,7 +107,8 @@ public class ExamForm extends JPanel {
 			                         JOptionPane.showMessageDialog(null, "Không tìm thấy đề thi!");
 			                         return;
 			                     }
-			                     List<QuestionEntity> questions = questionBUS.findAllInId(exam.getEx_QuestIDs());
+								 String exQuestionIds = exam.getEx_QuestIDs().replace("[","").replace("]","");
+			                     List<QuestionEntity> questions = questionBUS.findAllInId(exQuestionIds);
 							  WordExportService wordExportService=new WordExportService();
 			                     wordExportService.exportExamToWord(exam, questions, "Exam_" + exCode + ".docx");
 			                     JOptionPane.showMessageDialog(null, "Xuất file thành công!");

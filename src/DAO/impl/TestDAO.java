@@ -215,13 +215,14 @@ public class TestDAO extends AbstractDAO<TestEntity> implements ITestDAO {
         }
     }
     @Override
-    public List<String> getQuestions(String testCode) {
+    public List<String> getQuestions(String testCode,String exCode) {
         List<String> questions = new ArrayList<>();
         String sql = "SELECT qContent FROM questions " +
-                "WHERE FIND_IN_SET(qID, (SELECT ex_quesIDs FROM exams WHERE testCode = ?))";
+                "WHERE FIND_IN_SET(qID, (SELECT ex_quesIDs FROM exams WHERE testCode = ? AND exCode = ?))";
         try (Connection conn = getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, testCode);
+            stmt.setString(2, exCode);
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
                 questions.add(rs.getString("qContent"));
@@ -231,12 +232,13 @@ public class TestDAO extends AbstractDAO<TestEntity> implements ITestDAO {
         }
         return questions;
     }
-    private List<Integer> getQuestionIDs(String testCode) {
+    private List<Integer> getQuestionIDs(String testCode,String exCode) {
         List<Integer> questionIDs = new ArrayList<>();
-        String sql = "SELECT qID FROM questions WHERE FIND_IN_SET(qID, (SELECT ex_quesIDs FROM exams WHERE testCode = ?))";
+        String sql = "SELECT qID FROM questions WHERE FIND_IN_SET(qID, (SELECT ex_quesIDs FROM exams WHERE testCode = ? AND exCode = ?))";
         try (Connection conn = getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, testCode);
+            stmt.setString(2, exCode);
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
                 questionIDs.add(rs.getInt("qID"));
@@ -248,9 +250,9 @@ public class TestDAO extends AbstractDAO<TestEntity> implements ITestDAO {
     }
 
     @Override
-    public List<List<String>> getAnswers(String testCode) {
+    public List<List<String>> getAnswers(String testCode,String exCode) {
         List<List<String>> options = new ArrayList<>();
-        List<Integer> questionIDs = getQuestionIDs(testCode);
+        List<Integer> questionIDs = getQuestionIDs(testCode,exCode);
         for (int qID : questionIDs) {
             options.add(getAnswerOptions(qID));
         }
@@ -275,9 +277,9 @@ public class TestDAO extends AbstractDAO<TestEntity> implements ITestDAO {
     }
 
     @Override
-    public List<Integer> getCorrectAnswers(String testCode) {
+    public List<Integer> getCorrectAnswers(String testCode,String exCode) {
         List<Integer> correctAnswersList = new ArrayList<>();
-        List<Integer> questionIDs = getQuestionIDs(testCode);
+        List<Integer> questionIDs = getQuestionIDs(testCode,exCode);
         for (int qID : questionIDs) {
             correctAnswersList.add(getCorrectAnswerIndex(qID));
         }
@@ -316,5 +318,27 @@ public class TestDAO extends AbstractDAO<TestEntity> implements ITestDAO {
             e.printStackTrace();
         }
         return myCustomExam;
+    }
+
+    @Override
+    public List<String> getExCodes(String testCode) {
+        List<String> examCodes = new ArrayList<>();
+
+        String query = "SELECT exCode FROM exams WHERE testCode = ?";
+
+        try (Connection conn = getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+
+            stmt.setString(1, testCode);
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                examCodes.add(rs.getString("exCode"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return examCodes;
     }
 }

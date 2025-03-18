@@ -16,7 +16,8 @@ public class WordExportService {
     private AnswerBUS answerBUS = new AnswerBUS();
 
     public void exportExamToWord(MyCustomExam exam, List<QuestionEntity> questions, String filePath) throws IOException {
-        try (XWPFDocument document = new XWPFDocument(); FileOutputStream out = new FileOutputStream(filePath)) {
+        try (XWPFDocument document = new XWPFDocument();
+             FileOutputStream out = new FileOutputStream(filePath)) {
             // Tiêu đề bài thi
             XWPFParagraph title = document.createParagraph();
             title.setAlignment(ParagraphAlignment.CENTER);

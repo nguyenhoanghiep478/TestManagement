@@ -330,7 +330,7 @@ public class Home extends JFrame {
 					JOptionPane.showMessageDialog(null, "bạn không có quyền này");
 					return;
 				}
-				new TestForm("test_001",1,"test_001A");
+				new TestForm("test_001",1,"");
 			}
 		});
 		btnTest.setFont(new Font("Times New Roman", Font.PLAIN, 16));

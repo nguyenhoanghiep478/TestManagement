@@ -42,6 +42,33 @@ public class TestForm {
         this.exCode = exCode;
         this.testService = new TestService(new TestDAO(new TestMapper()));
         this.userId = userId;
+
+
+        List<String> exCodes = testService.getExCodes(testCode);
+
+
+            if (exCodes.size() > 1) {
+                String selectedExCode = (String) JOptionPane.showInputDialog(
+                        null,
+                        "Vui lòng chọn mã đề thi:",
+                        "Chọn Mã Đề",
+                        JOptionPane.QUESTION_MESSAGE,
+                        null,
+                        exCodes.toArray(),
+                        exCodes.get(0)
+                );
+
+                if (selectedExCode == null) {
+                    JOptionPane.showMessageDialog(null, "Bạn chưa chọn mã đề. Thoát ứng dụng.");
+                    return;
+                }
+
+                this.exCode = selectedExCode;
+            } else {
+                this.exCode = exCodes.get(0);
+            }
+
+
         loadTestData();
 
         frame = new JFrame("Test Application");
@@ -138,9 +165,9 @@ public class TestForm {
 
     private void loadTestData() {
         timeLeft = testService.getTestTime(testCode) * 60;
-        questions = testService.getQuestions(testCode);
-        options = testService.getAnswers(testCode);
-        correctAnswers = testService.getCorrectAnswers(testCode);
+        questions = testService.getQuestions(testCode,exCode);
+        options = testService.getAnswers(testCode,exCode);
+        correctAnswers = testService.getCorrectAnswers(testCode,exCode);
         selectedAnswers = new int[questions.size()];
         for (int i = 0; i < selectedAnswers.length; i++) {
             selectedAnswers[i] = -1;

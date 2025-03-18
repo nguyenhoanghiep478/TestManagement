@@ -8,9 +8,9 @@ public interface ITestService {
     TestEntity getTestById(int id);
     List<TestEntity> findAll();
     int getTestTime(String testCode);
-    List<String> getQuestions(String testCode);
-    List<List<String>> getAnswers(String testCode);
-    List<Integer> getCorrectAnswers(String testCode);
+    List<String> getQuestions(String testCode,String exCode);
+    List<List<String>> getAnswers(String testCode,String exCode);
+    List<Integer> getCorrectAnswers(String testCode,String exCode);
     void insertDefaultExams(String testCode);
     void deleteExams(String testCode);
     void logAction(String content,int userId,String testCode);
@@ -21,4 +21,6 @@ public interface ITestService {
     void createTest(TestEntity test);
 
     void updateTest(TestEntity test);
+
+    List<String> getExCodes(String testCode);
 }
