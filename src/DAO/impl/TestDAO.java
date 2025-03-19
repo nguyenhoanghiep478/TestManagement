@@ -17,9 +17,10 @@ public class TestDAO extends AbstractDAO<TestEntity> implements ITestDAO {
     private final TestMapper rowMapper;
 
     @Override
-    public void delete(int testID) {
+    public boolean delete(int testID) {
         String query = "UPDATE test SET testStatus = 0 WHERE testID = ?";
         update(query, testID);
+        return false;
     }
 
     @Override

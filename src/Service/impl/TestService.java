@@ -1,11 +1,13 @@
 package Service.impl;
 
 import DAO.ITestDAO;
+import DAO.impl.TestDAO;
 import Entity.MyCustomExam;
 import Entity.TestEntity;
 import Service.ITestService;
 import lombok.RequiredArgsConstructor;
 
+import java.sql.SQLException;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -85,6 +87,10 @@ public class TestService implements ITestService {
 
         testDAO.updateTest(test);
         testDAO.updateTestStructure(test);
+    }
+
+    public boolean deleteTest(int testId) {
+        return testDAO.delete(testId);
     }
 
     @Override

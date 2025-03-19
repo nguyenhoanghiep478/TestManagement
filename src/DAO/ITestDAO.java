@@ -6,7 +6,7 @@ import Entity.TestEntity;
 import java.util.List;
 
 public interface ITestDAO {
-    void delete(int testID);
+    boolean delete(int testID);
     TestEntity findBy(int testID);
     long insert(TestEntity test);
     void update(TestEntity test);

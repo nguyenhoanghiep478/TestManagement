@@ -23,4 +23,6 @@ public interface ITestService {
     void updateTest(TestEntity test);
 
     List<String> getExCodes(String testCode);
+
+    public boolean deleteTest(int testId);
 }

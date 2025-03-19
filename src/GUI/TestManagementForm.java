@@ -173,10 +173,10 @@ public class TestManagementForm extends JPanel {
         panelForm.add(lblFullName);
         lblFullName.setFont(new Font("Times New Roman", Font.PLAIN, 18));
 
-        btnDelete.addActionListener(e -> deleteUser());
+        btnDelete.addActionListener(e -> deleteTest());
         btnUpdate.addActionListener(e -> updateUser());
         addTableSelectionListener();
-        btnAdd.addActionListener(e -> addUser());
+        btnAdd.addActionListener(e -> addTest());
         loadTableData();
         JLabel lblQunLNgi = new JLabel("Quản lí bài thi");
         lblQunLNgi.setFont(new Font("Times New Roman", Font.BOLD, 26));
@@ -184,9 +184,7 @@ public class TestManagementForm extends JPanel {
         add(lblQunLNgi);
     }
 
-    private void addUser() {
-//        if (!validateInput()) return;
-//
+    private void addTest() {
         try {
             int tpId = topics.stream().filter(topic -> topic.getTpTitle().equals(cbIsAdmin.getSelectedItem())).findFirst().get().getTpID();
             if(!testService.isExistTest(UserName.getText(),tpId)){
@@ -236,21 +234,21 @@ public class TestManagementForm extends JPanel {
         }
     }
 
-    private void deleteUser() {
-//        int selectedRow = table.getSelectedRow();
-//        if (selectedRow == -1) {
-//            JOptionPane.showMessageDialog(this, "Vui lòng chọn người dùng cần xóa.");
-//            return;
-//        }
-//
-//        try {
-//            int userId = (int) model.getValueAt(selectedRow, 0);
-//            userBUS.deleteUser(userId);
-//            loadTableData();
-//            JOptionPane.showMessageDialog(this, "Xóa thành công!");
-//        } catch (Exception e) {
-//            JOptionPane.showMessageDialog(this, "Lỗi hệ thống: " + e.getMessage());
-//        }
+    private void deleteTest() {
+        int selectedRow = table.getSelectedRow();
+        if (selectedRow == -1) {
+            JOptionPane.showMessageDialog(this, "Vui lòng chọn bài thi cần xóa.");
+           return;
+        }
+
+       try {
+            int testId = (int) model.getValueAt(selectedRow, 0);
+            testService.deleteTest(testId);
+            loadTableData();
+            JOptionPane.showMessageDialog(this, "Xóa thành công!");
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Lỗi hệ thống: " + e.getMessage());
+        }
     }
     private boolean validateInput() {
         String userName = UserName.getText().trim();
@@ -286,8 +284,6 @@ public class TestManagementForm extends JPanel {
     }
     private void loadTableData() {
         model.setRowCount(0); // Xóa dữ liệu cũ
-
-
         for (TestEntity test : testService.findAll()) {
             String topicTitle = topics.stream().filter(topic -> topic.getTpID() == test.getTopicId()).findFirst().get().getTpTitle();
             model.addRow(new Object[]{test.getTestId(), test.getTestCode(),
